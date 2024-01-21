@@ -26,7 +26,7 @@ Steps:
 6. Run the script with the information you've gathered and the fix has been applied.
 
 Known Bugs:
-There is at least one bug we know of which is Guilds are bugged on the host account. Transferring ownership and leaving the guild before applying the fix may be a temporary workaround.
+There is at least one bug we know of which is Guilds are bugged on the host account. Transferring ownership from the host account to another account and leaving the guild on co-op before applying the fix is a confirmed workaround.
 
 Credit to [cheahjs](https://gist.github.com/cheahjs/300239464dd84fe6902893b6b9250fd0) for his very useful script helping me to make this fix!
 
