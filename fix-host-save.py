@@ -37,6 +37,11 @@ of your save folder before continuing. Press enter if you would like to continue
     level_json_path = level_sav_path + '.json'
     host_json_path = host_sav_path + '.json'
     
+    # The co-op host needs to have created a character on the dedicated server and that save is used for this script.
+    if not os.path.exists(host_new_sav_path):
+        print('ERROR: Your co-op host\'s player save does not exist. Did your host create their character? Once they create their character, a file called "' + host_new_sav_path + '" should appear. Refer to steps 1&2 of the README.')
+        exit(1)
+    
     # Convert save files to JSON so it is possible to edit them.
     sav_to_json(uesave_path, level_sav_path)
     sav_to_json(uesave_path, host_sav_path)
