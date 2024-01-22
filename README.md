@@ -17,12 +17,12 @@ Usage: `python fix-host-save.py <uesave.exe> <save_path> <host_guid>`
 `<save_path>` - Path to your save folder    
 `<host_guid>` - GUID of your host
 
-Example: `python fix-host-save.py C:\Users\John\.cargo\bin\uesave.exe C:\Users\John\Desktop\my_temporary_folder\2E85FD38BAA792EB1D4C09386F3A3CDA 6E80B1A6000000000000000000000000`
+Example: `python fix-host-save.py "C:\Users\John\.cargo\bin\uesave.exe" "C:\Users\John\Desktop\my_temporary_folder\2E85FD38BAA792EB1D4C09386F3A3CDA" 6E80B1A6000000000000000000000000`
 
 How to get a co-op save to work with your dedicated server:
 1. Copy your desired save's folder from `C:\Users\<username>\AppData\Local\Pal\Saved\SaveGames\<random_numbers>` to your dedicated server.
-2. In the `PalServer\Pal\Saved\Config\WindowsServer\GameUserSettings.ini` file, change the `DedicatedServerName` to match your save's folder name. For example, if your save's folder name is `2E85FD38BAA792EB1D4C09386F3A3CDA`, the `DedicatedServerName` would change to `DedicatedServerName=2E85FD38BAA792EB1D4C09386F3A3CDA`.
-3. Confirm you can connect to your save on the dedicated server and everything is how it should be.
+2. In the `PalServer\Pal\Saved\Config\WindowsServer\GameUserSettings.ini` file, change the `DedicatedServerName` to match your save's folder name. For example, if your save's folder name is `2E85FD38BAA792EB1D4C09386F3A3CDA`, the `DedicatedServerName` changes to `DedicatedServerName=2E85FD38BAA792EB1D4C09386F3A3CDA`.
+3. Confirm you can connect to your save on the dedicated server and that the world is the one in the save. You can check the world with a character that doesn't belong to the co-op host.
 4. Afterwards, the co-op host must create a new character on the dedicated server. A new `.sav` file should appear in `PalServer\Pal\Saved\SaveGames\0\<your_save_here>\Players`.
 5. The name of that new `.sav` file is your host's real GUID. We will need your host's real GUID for the script to work.
 6. Copy the entire dedicated server save at `PalServer\Pal\Saved\SaveGames\0\<your_save_here>` (it must be the save with the co-op host's new character!) into a temporary folder and remember the path for the temporary folder because it's needed to run the script.
@@ -37,6 +37,7 @@ Known Bugs:
 - \[Guild bug\] Guild membership doesn't work properly on the co-op host's character. Details: This is likely happening because there's some guild configuration being missed in the character migration from the 00001 save to the new save.
 - \[Pal bug\] Pals owned by the co-op host won't do anything at the base. Details: This is caused by the Pals not being registered with the correct guild which means it's probably related to the \[Guild bug\].
 - \[Viewing Cage bug\] The Viewing Cage [isn't officially supported](https://tech.palworldgame.com/dedicated-server-guide#qa) on dedicated servers so if you have built one, it needs to be removed from your co-op save before migrating it to your dedicated server.
+- \[Left Click bug\] After applying the fix, some people experience a bug where you can't hold your left mouse button to attack. Since it only affects a subset of people, I guess some action done in the save before applying the fix, triggers this.
 
 Workarounds:
 - \[Guild bug\] In co-op, before moving the save, transfer ownership from the co-op host's character to another character and have the co-op host's character leave the guild.
