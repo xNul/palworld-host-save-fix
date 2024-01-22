@@ -36,10 +36,20 @@ of your save folder before continuing. Press enter if you would like to continue
     host_new_sav_path = save_path + '/Players/' + host_guid + '.sav'
     level_json_path = level_sav_path + '.json'
     host_json_path = host_sav_path + '.json'
+
+    # uesave_path must point directly to the executable, not just the path it is located in.
+    if not os.path.exists(uesave_path) or not os.path.isfile(uesave_path):
+        print('ERROR: Your given <uesave_path> of "' + uesave_path + '" is invalid. It must point directly to the executable. For example: C:\\Users\\Bob\\.cargo\\bin\\uesave.exe')
+        exit(1)
+    
+    # save_path must exist in order to use it.
+    if not os.path.exists(save_path):
+        print('ERROR: Your given <save_path> of "' + save_path + '" does not exist. Did you enter the correct path to your save folder?')
+        exit(1)
     
     # The co-op host needs to have created a character on the dedicated server and that save is used for this script.
     if not os.path.exists(host_new_sav_path):
-        print('ERROR: Your co-op host\'s player save does not exist. Did your host create their character? Once they create their character, a file called "' + host_new_sav_path + '" should appear. Refer to steps 3&4 of the README.')
+        print('ERROR: Your co-op host\'s player save does not exist. Did you enter the correct GUID of your co-op host? It should look like "8E910AC2000000000000000000000000".\nDid your host create their character with the provided save? Once they create their character, a file called "' + host_new_sav_path + '" should appear. Refer to steps 3&4 of the README.')
         exit(1)
     
     # Convert save files to JSON so it is possible to edit them.
