@@ -10,7 +10,7 @@ Prerequisites:
 - Palworld Dedicated Server is installed, running, and you're able to join it.
 - Python 3
 - [uesave-rs](https://github.com/trumank/uesave-rs)
-- Follow the workaround for the \[Guild bug\] and the \[Viewing Cage bug\] in co-op before moving the save
+- Follow the workaround below for the \[Guild bug\] and the \[Viewing Cage bug\] in co-op before moving the save
 
 Usage: `python fix-host-save.py <uesave.exe> <save_path> <host_guid>`    
 `<uesave.exe>` - Path to your uesave.exe    
@@ -24,7 +24,7 @@ How to get a co-op save to work with your dedicated server:
 2. In the `PalServer\Pal\Saved\Config\WindowsServer\GameUserSettings.ini` file, change the `DedicatedServerName` to match your save's folder name. For example, if your save's folder name is `2E85FD38BAA792EB1D4C09386F3A3CDA`, the `DedicatedServerName` changes to `DedicatedServerName=2E85FD38BAA792EB1D4C09386F3A3CDA`.
 3. Confirm you can connect to your save on the dedicated server and that the world is the one in the save. You can check the world with a character that doesn't belong to the co-op host.
 4. Afterwards, the co-op host must create a new character on the dedicated server. A new `.sav` file should appear in `PalServer\Pal\Saved\SaveGames\0\<your_save_here>\Players`.
-5. The name of that new `.sav` file is your host's real GUID. We will need your host's real GUID for the script to work.
+5. The name of that new `.sav` file is your host's GUID. We will need your host's GUID for the script to work.
 6. Copy the entire dedicated server save at `PalServer\Pal\Saved\SaveGames\0\<your_save_here>` (it must be the save with the co-op host's new character!) into a temporary folder and remember the path for the temporary folder because it's needed to run the script.
 7. If you have not already done so, install [uesave-rs](https://github.com/trumank/uesave-rs) and get the file path to its install location. If it does not have `uesave.exe` at the end, it's wrong.
 8. **Make a backup of your save!** This is an experimental script and has known bugs so always keep a backup copy of your save.
