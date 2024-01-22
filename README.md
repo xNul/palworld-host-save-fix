@@ -32,6 +32,7 @@ How to get a co-op save to work with your dedicated server:
 10. Have the co-op host join the server with their fixed character.
 11. Enter the co-op host's character into the guild they left and transfer guild ownership back to the co-op host if they had it before.
 12. Follow the \[Pal bug\] workaround to fix your Pals.
+13. Delete `PalServer\Pal\Saved\SaveGames\0\<your_save_here>\WorldOption.sav` to allow modification of `PalWorldSettings.ini`.
 
 Known Bugs:
 - \[Guild bug\] Guild membership doesn't work properly on the co-op host's character. Details: This is likely happening because there's some guild configuration being missed in the character migration from the 00001 save to the new save.
