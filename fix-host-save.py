@@ -49,7 +49,7 @@ of your save folder before continuing. Press enter if you would like to continue
     
     # The co-op host needs to have created a character on the dedicated server and that save is used for this script.
     if not os.path.exists(host_new_sav_path):
-        print('ERROR: Your co-op host\'s player save does not exist. Did you enter the correct GUID of your co-op host? It should look like "8E910AC2000000000000000000000000".\nDid your host create their character with the provided save? Once they create their character, a file called "' + host_new_sav_path + '" should appear. Refer to steps 3&4 of the README.')
+        print('ERROR: Your co-op host\'s player save does not exist. Did you enter the correct GUID of your co-op host? It should look like "8E910AC2000000000000000000000000".\nDid your host create their character with the provided save? Once they create their character, a file called "' + host_new_sav_path + '" should appear. Refer to steps 4&5 of the README.')
         exit(1)
     
     # Convert save files to JSON so it is possible to edit them.
