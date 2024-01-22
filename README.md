@@ -22,17 +22,17 @@ Example: `python fix-host-save.py "C:\Users\John\.cargo\bin\uesave.exe" "C:\User
 How to get a co-op save to work with your dedicated server:
 1. Copy your desired save's folder from `C:\Users\<username>\AppData\Local\Pal\Saved\SaveGames\<random_numbers>` to your dedicated server.
 2. In the `PalServer\Pal\Saved\Config\WindowsServer\GameUserSettings.ini` file, change the `DedicatedServerName` to match your save's folder name. For example, if your save's folder name is `2E85FD38BAA792EB1D4C09386F3A3CDA`, the `DedicatedServerName` changes to `DedicatedServerName=2E85FD38BAA792EB1D4C09386F3A3CDA`.
-3. Confirm you can connect to your save on the dedicated server and that the world is the one in the save. You can check the world with a character that doesn't belong to the co-op host.
-4. Afterwards, the co-op host must create a new character on the dedicated server. A new `.sav` file should appear in `PalServer\Pal\Saved\SaveGames\0\<your_save_here>\Players`.
-5. The name of that new `.sav` file is your host's GUID. We will need your host's GUID for the script to work.
-6. Copy the entire dedicated server save at `PalServer\Pal\Saved\SaveGames\0\<your_save_here>` (it must be the save with the co-op host's new character!) into a temporary folder and remember the path for the temporary folder because it's needed to run the script.
-7. If you have not already done so, install [uesave-rs](https://github.com/trumank/uesave-rs) and get the file path to its install location. If it does not have `uesave.exe` at the end, it's wrong.
-8. **Make a backup of your save!** This is an experimental script and has known bugs so always keep a backup copy of your save.
-9. Run the script with the information you've gathered and the fix will be applied.
-10. Have the co-op host join the server with their fixed character.
-11. Enter the co-op host's character into the guild they left and transfer guild ownership back to the co-op host if they had it before.
-12. Follow the \[Pal bug\] workaround to fix your Pals.
-13. Delete `PalServer\Pal\Saved\SaveGames\0\<your_save_here>\WorldOption.sav` to allow modification of `PalWorldSettings.ini`.
+3. Delete `PalServer\Pal\Saved\SaveGames\0\<your_save_here>\WorldOption.sav` to allow modification of `PalWorldSettings.ini`. Players will have to choose their respawn point again, but nothing else is affected as far as I can tell.
+4. Confirm you can connect to your save on the dedicated server and that the world is the one in the save. You can check the world with a character that doesn't belong to the co-op host.
+5. Afterwards, the co-op host must create a new character on the dedicated server. A new `.sav` file should appear in `PalServer\Pal\Saved\SaveGames\0\<your_save_here>\Players`.
+6. The name of that new `.sav` file is your host's GUID. We will need your host's GUID for the script to work.
+7. Copy the entire dedicated server save at `PalServer\Pal\Saved\SaveGames\0\<your_save_here>` (it must be the save with the co-op host's new character!) into a temporary folder and remember the path for the temporary folder because it's needed to run the script.
+8. If you have not already done so, install [uesave-rs](https://github.com/trumank/uesave-rs) and get the file path to its install location. If it does not have `uesave.exe` at the end, it's wrong.
+9. **Make a backup of your save!** This is an experimental script and has known bugs so always keep a backup copy of your save.
+10. Run the script with the information you've gathered and the fix will be applied.
+11. Have the co-op host join the server with their fixed character.
+12. Enter the co-op host's character into the guild they left and transfer guild ownership back to the co-op host if they had it before.
+13. Follow the \[Pal bug\] workaround to fix your Pals.
 
 Known Bugs:
 - \[Guild bug\] Guild membership doesn't work properly on the co-op host's character. Details: This is likely happening because there's some guild configuration being missed in the character migration from the 00001 save to the new save.
