@@ -10,6 +10,7 @@ Prerequisites:
 - Palworld Dedicated Server is installed and running
 - Python 3
 - [uesave-rs](https://github.com/trumank/uesave-rs)
+- Remove `Viewing Cage` from your world [Q&A](https://tech.palworldgame.com/dedicated-server-guide#qa)
 
 Usage: `python fix-host-save.py <uesave.exe> <save_path> <host_guid>`    
 `<uesave.exe>` - Path to your uesave.exe    
