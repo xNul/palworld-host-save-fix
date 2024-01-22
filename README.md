@@ -30,7 +30,7 @@ How to get a co-op save to work with your dedicated server:
 8. **Make a backup of your save!** This is an experimental script and has known bugs so always keep a backup copy of your save.
 9. Run the script with the information you've gathered and the fix will be applied.
 10. Have the co-op host join the server with their fixed character.
-11. Enter the guild you left and transfer guild ownership back to the co-op host if they had it before.
+11. Enter the co-op host's character into the guild they left and transfer guild ownership back to the co-op host if they had it before.
 12. Follow the \[Pal bug\] workaround to fix your Pals.
 
 Known Bugs:
@@ -40,11 +40,11 @@ Known Bugs:
 - \[Left Click bug\] After applying the fix, some people experience a bug where you can't hold your left mouse button to attack. Since it only affects a subset of people, I guess some action done in the save before applying the fix, triggers this.
 
 Workarounds:
-- \[Guild bug\] In co-op, before moving the save, transfer ownership from the co-op host's character to another character and have the co-op host's character leave the guild.
-- \[Pal bug\] On the dedicated server, after the co-op host's character is restored, have the co-op host's character go into their base, drop and pick up every single Pal they own, including the base workers. This will re-register the Pals with the correct guild.
+- \[Guild bug\] In co-op, before moving the save, transfer ownership from the co-op host's character to another character and have the co-op host's character leave the guild. Fixes the issue entirely.
+- \[Pal bug\] On the dedicated server, after the co-op host's character is restored, have the co-op host's character go into their base, drop and pick up every single Pal they own, including the base workers. This will re-register the Pals with the correct guild. Fixes the issue entirely.
 - \[Viewing Cage bug\] If you have built a Viewing Cage, it needs to be removed from your co-op save before migrating it to your dedicated server.
 
-Note: This does not fix the issue with normal (non-host) players being forced to create new characters. It is specifically for when the host is forced to create a new character. However, it can be repurposed to solve that problem for those who are technical enough. To do so, you must have all the normal players you want to fix create new characters, record the old and new GUIDs for each player, modify the `host_sav_path` in the script to point to the old GUID for a player, use that player's new GUID as input to the script, and run the script. Do that for every player and in the end, every player should have their data restored. However, these players will probably have the same bugs as the host does so make sure to follow the workarounds for them.
+Note: This does not fix the issue with normal (non-host) players being forced to create new characters. It is specifically for when the host is forced to create a new character. However, it can be repurposed to solve that problem for those who are technical enough. To do so, you must have all the normal players that you want to fix create new characters, record the old and new GUIDs for each player, modify the `host_sav_path` in the script to point to the old GUID for a player, use that player's new GUID as input to the script, and run the script. Do that for every player and in the end, every player will have their data restored. However, these players will probably have the same bugs as the host so make sure to follow the workarounds for them.
 
 Credit to [cheahjs](https://gist.github.com/cheahjs/300239464dd84fe6902893b6b9250fd0) for his very useful script helping me to make this fix!
 
