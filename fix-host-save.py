@@ -15,7 +15,9 @@ UESAVE_TYPE_MAPS = [
 
 def main():
     if len(sys.argv) < 4:
-        print('fix-host-save.py <uesave.exe> <save_path> <host_guid>')
+        print('fix-host-save.py <uesave.exe> <save_path> <host_guid> \n')
+        print('or \n')
+        print('fix-host-save.py <uesave.exe> <save_path> <dest_guid> <orig_guid>')
         exit(1)
     
     # Warn the user about potential data loss.
@@ -27,12 +29,35 @@ of your save folder before continuing. Press enter if you would like to continue
     uesave_path = sys.argv[1]
     save_path = sys.argv[2]
     host_guid = sys.argv[3]
+    if len(sys.argv) < 5:
+        orig_guid = '00000000000000000000000000000001'
+    else:
+        orig_guid = sys.argv[4]
     
     # Apply expected formatting for the GUID.
     host_guid_formatted = '{}-{}-{}-{}-{}'.format(host_guid[:8], host_guid[8:12], host_guid[12:16], host_guid[16:20], host_guid[20:]).lower()
+    orig_level_formatted = ''
+    host_level_formatted = ''
+    
+    # Player GUIDs in a guild are stored as the decimal representation of their GUID
+    # Every byte in decimal represents 2 hexidecimal characters of the GUID
+    # 32-bit little endian
+    # I'm sure there's a better way to do this but Im tired and Python isnt my forte
+    for y in range(8,36,8):
+        for x in range(y-1,y-9,-2):
+           tempOrig = str(int(orig_guid[x-1]+orig_guid[x],16))+',\n'
+           tempHost = str(int(host_guid[x-1]+host_guid[x],16))+',\n'
+           orig_level_formatted+=tempOrig
+           host_level_formatted+=tempHost
+        
+    orig_level_formatted=orig_level_formatted.rstrip("\n,")
+    host_level_formatted=host_level_formatted.rstrip("\n,")
+    orig_level_formatted=list(map(int,orig_level_formatted.split(",\n")))
+    host_level_formatted=list(map(int,host_level_formatted.split(",\n")))
+    
     
     level_sav_path = save_path + '/Level.sav'
-    host_sav_path = save_path + '/Players/00000000000000000000000000000001.sav'
+    host_sav_path = save_path + '/Players/'+ orig_guid + '.sav'
     host_new_sav_path = save_path + '/Players/' + host_guid + '.sav'
     level_json_path = level_sav_path + '.json'
     host_json_path = host_sav_path + '.json'
@@ -49,7 +74,7 @@ of your save folder before continuing. Press enter if you would like to continue
     
     # The co-op host needs to have created a character on the dedicated server and that save is used for this script.
     if not os.path.exists(host_new_sav_path):
-        print('ERROR: Your co-op host\'s player save does not exist. Did you enter the correct GUID of your co-op host? It should look like "8E910AC2000000000000000000000000".\nDid your host create their character with the provided save? Once they create their character, a file called "' + host_new_sav_path + '" should appear. Refer to steps 5&6 of the README.')
+        print('ERROR: Your co-op host\'s player save does not exist. Did you enter the correct GUID of your co-op host? It should look like "8E910AC2000000000000000000000000".\nDid your host create their character with the provided save? Once they create their character, a file called "' + host_new_sav_path + '" should appear. Refer to steps 4&5 of the README.')
         exit(1)
     
     # Convert save files to JSON so it is possible to edit them.
@@ -76,6 +101,17 @@ of your save folder before continuing. Press enter if you would like to continue
         if instance_id == host_instance_id:
             level_json["root"]["properties"]["worldSaveData"]["Struct"]["value"]["Struct"]["CharacterSaveParameterMap"]["Map"]["value"][i]["key"]["Struct"]["Struct"]["PlayerUId"]["Struct"]["value"]["Guid"] = host_guid_formatted
             break
+    group_ids_len = len(level_json["root"]["properties"]["worldSaveData"]["Struct"]["value"]["Struct"]["GroupSaveDataMap"]["Map"]["value"])
+    for i in range(group_ids_len):
+        group_id = level_json["root"]["properties"]["worldSaveData"]["Struct"]["value"]["Struct"]["GroupSaveDataMap"]["Map"]["value"][i]
+        if group_id["value"]["Struct"]["Struct"]["GroupType"]["Enum"]["value"] == "EPalGroupType::Guild":
+           group_raw_data =  group_id["value"]["Struct"]["Struct"]["RawData"]["Array"]["value"]["Base"]["Byte"]["Byte"]
+           raw_data_len = len(group_raw_data)
+           for i in range(raw_data_len-15):
+               if group_raw_data[i:i+16] == orig_level_formatted:
+                  group_raw_data[i:i+16] = host_level_formatted
+        
+
     print('Changes have been made')
     
     # Dump modified data to JSON.
