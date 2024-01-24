@@ -14,10 +14,8 @@ UESAVE_TYPE_MAPS = [
 ]
 
 def main():
-    if len(sys.argv) < 4:
-        print('fix-host-save.py <uesave.exe> <save_path> <host_guid> \n')
-        print('or \n')
-        print('fix-host-save.py <uesave.exe> <save_path> <dest_guid> <orig_guid>')
+    if len(sys.argv) < 5:
+        print('fix-host-save.py <uesave.exe> <save_path> <new_guid> <old_guid>')
         exit(1)
     
     # Warn the user about potential data loss.
@@ -28,39 +26,35 @@ of your save folder before continuing. Press enter if you would like to continue
     
     uesave_path = sys.argv[1]
     save_path = sys.argv[2]
-    host_guid = sys.argv[3]
-    if len(sys.argv) < 5:
-        orig_guid = '00000000000000000000000000000001'
-    else:
-        orig_guid = sys.argv[4]
+    new_guid = sys.argv[3]
+    old_guid = sys.argv[4]
     
     # Apply expected formatting for the GUID.
-    host_guid_formatted = '{}-{}-{}-{}-{}'.format(host_guid[:8], host_guid[8:12], host_guid[12:16], host_guid[16:20], host_guid[20:]).lower()
-    orig_level_formatted = ''
-    host_level_formatted = ''
+    new_guid_formatted = '{}-{}-{}-{}-{}'.format(new_guid[:8], new_guid[8:12], new_guid[12:16], new_guid[16:20], new_guid[20:]).lower()
+    old_level_formatted = ''
+    new_level_formatted = ''
     
-    # Player GUIDs in a guild are stored as the decimal representation of their GUID
+    # Player GUIDs in a guild are stored as the decimal representation of their GUID.
     # Every byte in decimal represents 2 hexidecimal characters of the GUID
-    # 32-bit little endian
-    # I'm sure there's a better way to do this but Im tired and Python isnt my forte
-    for y in range(8,36,8):
-        for x in range(y-1,y-9,-2):
-           tempOrig = str(int(orig_guid[x-1]+orig_guid[x],16))+',\n'
-           tempHost = str(int(host_guid[x-1]+host_guid[x],16))+',\n'
-           orig_level_formatted+=tempOrig
-           host_level_formatted+=tempHost
+    # 32-bit little endian.
+    for y in range(8, 36, 8):
+        for x in range(y-1, y-9, -2):
+           temp_old = str(int(old_guid[x-1] + old_guid[x], 16))+',\n'
+           temp_new = str(int(new_guid[x-1] + new_guid[x], 16))+',\n'
+           old_level_formatted += temp_old
+           new_level_formatted += temp_new
         
-    orig_level_formatted=orig_level_formatted.rstrip("\n,")
-    host_level_formatted=host_level_formatted.rstrip("\n,")
-    orig_level_formatted=list(map(int,orig_level_formatted.split(",\n")))
-    host_level_formatted=list(map(int,host_level_formatted.split(",\n")))
+    old_level_formatted = old_level_formatted.rstrip("\n,")
+    new_level_formatted = new_level_formatted.rstrip("\n,")
+    old_level_formatted = list(map(int, old_level_formatted.split(",\n")))
+    new_level_formatted = list(map(int, new_level_formatted.split(",\n")))
     
     
     level_sav_path = save_path + '/Level.sav'
-    host_sav_path = save_path + '/Players/'+ orig_guid + '.sav'
-    host_new_sav_path = save_path + '/Players/' + host_guid + '.sav'
+    old_sav_path = save_path + '/Players/'+ old_guid + '.sav'
+    new_sav_path = save_path + '/Players/' + new_guid + '.sav'
     level_json_path = level_sav_path + '.json'
-    host_json_path = host_sav_path + '.json'
+    old_json_path = old_sav_path + '.json'
 
     # uesave_path must point directly to the executable, not just the path it is located in.
     if not os.path.exists(uesave_path) or not os.path.isfile(uesave_path):
@@ -72,35 +66,39 @@ of your save folder before continuing. Press enter if you would like to continue
         print('ERROR: Your given <save_path> of "' + save_path + '" does not exist. Did you enter the correct path to your save folder?')
         exit(1)
     
-    # The co-op host needs to have created a character on the dedicated server and that save is used for this script.
-    if not os.path.exists(host_new_sav_path):
-        print('ERROR: Your co-op host\'s player save does not exist. Did you enter the correct GUID of your co-op host? It should look like "8E910AC2000000000000000000000000".\nDid your host create their character with the provided save? Once they create their character, a file called "' + host_new_sav_path + '" should appear. Refer to steps 4&5 of the README.')
+    # The player needs to have created a character on the dedicated server and that save is used for this script.
+    if not os.path.exists(new_sav_path):
+        print('ERROR: Your player save does not exist. Did you enter the correct new GUID of your player? It should look like "8E910AC2000000000000000000000000".\nDid your player create their character with the provided save? Once they create their character, a file called "' + new_sav_path + '" should appear. Look back over the steps in the README on how to get your new GUID.')
         exit(1)
     
     # Convert save files to JSON so it is possible to edit them.
     sav_to_json(uesave_path, level_sav_path)
-    sav_to_json(uesave_path, host_sav_path)
+    sav_to_json(uesave_path, old_sav_path)
     print('Converted save files to JSON')
     
     # Parse our JSON files.
-    with open(host_json_path) as f:
-        host_json = json.load(f)
+    with open(old_json_path) as f:
+        old_json = json.load(f)
     with open(level_json_path) as f:
         level_json = json.load(f)
     print('JSON files have been parsed')
     
-    # Replace two instances of the 00001 GUID with the former host's actual GUID.
-    host_json["root"]["properties"]["SaveData"]["Struct"]["value"]["Struct"]["PlayerUId"]["Struct"]["value"]["Guid"] = host_guid_formatted
-    host_json["root"]["properties"]["SaveData"]["Struct"]["value"]["Struct"]["IndividualId"]["Struct"]["value"]["Struct"]["PlayerUId"]["Struct"]["value"]["Guid"] = host_guid_formatted
-    host_instance_id = host_json["root"]["properties"]["SaveData"]["Struct"]["value"]["Struct"]["IndividualId"]["Struct"]["value"]["Struct"]["InstanceId"]["Struct"]["value"]["Guid"]
+    # Replace all instances of the old GUID with the new GUID.
     
-    # Search for and replace the final instance of the 00001 GUID with the InstanceId.
+    # Player data replacement.
+    old_json["root"]["properties"]["SaveData"]["Struct"]["value"]["Struct"]["PlayerUId"]["Struct"]["value"]["Guid"] = new_guid_formatted
+    old_json["root"]["properties"]["SaveData"]["Struct"]["value"]["Struct"]["IndividualId"]["Struct"]["value"]["Struct"]["PlayerUId"]["Struct"]["value"]["Guid"] = new_guid_formatted
+    old_instance_id = old_json["root"]["properties"]["SaveData"]["Struct"]["value"]["Struct"]["IndividualId"]["Struct"]["value"]["Struct"]["InstanceId"]["Struct"]["value"]["Guid"]
+    
+    # Level data replacement.
     instance_ids_len = len(level_json["root"]["properties"]["worldSaveData"]["Struct"]["value"]["Struct"]["CharacterSaveParameterMap"]["Map"]["value"])
     for i in range(instance_ids_len):
         instance_id = level_json["root"]["properties"]["worldSaveData"]["Struct"]["value"]["Struct"]["CharacterSaveParameterMap"]["Map"]["value"][i]["key"]["Struct"]["Struct"]["InstanceId"]["Struct"]["value"]["Guid"]
-        if instance_id == host_instance_id:
-            level_json["root"]["properties"]["worldSaveData"]["Struct"]["value"]["Struct"]["CharacterSaveParameterMap"]["Map"]["value"][i]["key"]["Struct"]["Struct"]["PlayerUId"]["Struct"]["value"]["Guid"] = host_guid_formatted
+        if instance_id == old_instance_id:
+            level_json["root"]["properties"]["worldSaveData"]["Struct"]["value"]["Struct"]["CharacterSaveParameterMap"]["Map"]["value"][i]["key"]["Struct"]["Struct"]["PlayerUId"]["Struct"]["value"]["Guid"] = new_guid_formatted
             break
+    
+    # Guild data replacement.
     group_ids_len = len(level_json["root"]["properties"]["worldSaveData"]["Struct"]["value"]["Struct"]["GroupSaveDataMap"]["Map"]["value"])
     for i in range(group_ids_len):
         group_id = level_json["root"]["properties"]["worldSaveData"]["Struct"]["value"]["Struct"]["GroupSaveDataMap"]["Map"]["value"][i]
@@ -108,33 +106,31 @@ of your save folder before continuing. Press enter if you would like to continue
            group_raw_data =  group_id["value"]["Struct"]["Struct"]["RawData"]["Array"]["value"]["Base"]["Byte"]["Byte"]
            raw_data_len = len(group_raw_data)
            for i in range(raw_data_len-15):
-               if group_raw_data[i:i+16] == orig_level_formatted:
-                  group_raw_data[i:i+16] = host_level_formatted
-        
-
+               if group_raw_data[i:i+16] == old_level_formatted:
+                  group_raw_data[i:i+16] = new_level_formatted
     print('Changes have been made')
     
     # Dump modified data to JSON.
-    with open(host_json_path, 'w') as f:
-        json.dump(host_json, f, indent=2)
+    with open(old_json_path, 'w') as f:
+        json.dump(old_json, f, indent=2)
     with open(level_json_path, 'w') as f:
         json.dump(level_json, f, indent=2)
     print('JSON files have been exported')
     
     # Convert our JSON files to save files.
     json_to_sav(uesave_path, level_json_path)
-    json_to_sav(uesave_path, host_json_path)
+    json_to_sav(uesave_path, old_json_path)
     print('Converted JSON files back to save files')
     
     # Clean up miscellaneous GVAS and JSON files which are no longer needed.
     clean_up_files(level_sav_path)
-    clean_up_files(host_sav_path)
+    clean_up_files(old_sav_path)
     print('Miscellaneous files removed')
     
-    # We must rename the patched save file from the 00001 GUID to the host's actual GUID.
-    if os.path.exists(host_new_sav_path):
-        os.remove(host_new_sav_path)
-    os.rename(host_sav_path, host_new_sav_path)
+    # We must rename the patched save file from the old GUID to the new GUID for the server to recognize it.
+    if os.path.exists(new_sav_path):
+        os.remove(new_sav_path)
+    os.rename(old_sav_path, new_sav_path)
     print('Fix has been applied! Have fun!')
 
 def sav_to_json(uesave_path, file):
