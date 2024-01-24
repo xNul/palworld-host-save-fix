@@ -1,6 +1,6 @@
 # Palworld Host Save Fix
 
-### **\*Experimental\***
+> ### :warning: This tool is experimental. Be careful of data loss and *always* make a backup.
 
 Fixes the bug which forces a player to create a new character when they already have a save.
 
