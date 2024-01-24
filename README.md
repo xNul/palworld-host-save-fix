@@ -36,9 +36,9 @@ Example:
 ## How to migrate a co-op save to a Windows dedicated server
 
 Prerequisites:
-- Install the dependencies above.
+- Install the dependencies [above](#usage).
 - The dedicated server is installed, running, and you're able to join it.
-- If you have a Viewing Cage, follow the workaround below for the \[Viewing Cage bug\] in co-op before moving the save.
+- If you have a Viewing Cage, follow the workaround [below](#viewing-cage-bug) for the \[Viewing Cage bug\] in co-op before moving the save.
 
 Steps:
 1. Copy your desired save's folder from `C:\Users\<username>\AppData\Local\Pal\Saved\SaveGames\<random_numbers>` to your dedicated server.
@@ -50,14 +50,14 @@ Steps:
 7. Copy the entire dedicated server save at `PalServer\Pal\Saved\SaveGames\0\<your_save_here>` (it must be the save with the co-op host's new character!) into a temporary folder and remember the path for the temporary folder because it's needed to run the script.
 8. If you have not already done so, install [uesave-rs](https://github.com/trumank/uesave-rs) and get the file path to its install location. If the path does not have `uesave.exe` at the end, it's wrong.
 9. **Make a backup of your save!** This is an experimental script and has known bugs so always keep a backup copy of your save.
-10. Run the script using the command in the Usage section with the information you've gathered and using `00000000000000000000000000000001` as the co-op host's old GUID.
+10. Run the script using the command in the [Usage section](#usage) with the information you've gathered and using `00000000000000000000000000000001` as the co-op host's old GUID.
 11. Have the co-op host join the server with their fixed character.
-12. If, after 5 minutes of play, your Pals won't attack for you or do work in the base, follow the \[Pal bug\] workaround to fix them.
+12. If, after 5 minutes of play, your Pals won't attack for you or do work in the base, follow the [\[Pal bug\] workaround](#pal-bug) to fix them.
 
 ## How to migrate a Windows/Linux dedicated server save to a Linux/Windows dedicated server
 
 Prerequisites:
-- Install the dependencies above.
+- Install the dependencies [above](#usage).
 - The new dedicated server is installed, running, and you're able to join it.
 
 Steps:
@@ -67,15 +67,15 @@ Steps:
 4. Copy the entire new server save at `PalServer\Pal\Saved\SaveGames\0\<your_save_here>` (it must be the save with all the new characters!) into a temporary folder and remember the path for the temporary folder because it's needed to run the script.
 5. If you have not already done so, install [uesave-rs](https://github.com/trumank/uesave-rs) and get the file path to its install location. If the path does not have `uesave.exe` at the end, it's wrong.
 6. **Make a backup of your save!** This is an experimental script and has known bugs so always keep a backup copy of your save.
-7. For each player's corresponding new GUID and old GUID pair, run the script using the command in the Usage section.
+7. For each player's corresponding new GUID and old GUID pair, run the script using the command in the [Usage section](#usage).
 8. Have each player join the server with their fixed character.
-9. If, after 5 minutes of play, a player's Pals won't attack for them or do work in their base, have them follow the \[Pal bug\] workaround to fix them.
+9. If, after 5 minutes of play, a player's Pals won't attack for them or do work in their base, have them follow the [\[Pal bug\] workaround](#pal-bug) to fix them.
 
 ## How to migrate a Windows dedicated server save to co-op
 
-This should be possible but I haven't tried it yet. Instructions should be very similar to "How to migrate a co-op save to a Windows dedicated server" but where you use the `00000000000000000000000000000001` GUID as the new GUID and the player's current GUID on the dedicated server as the old GUID.
+[Apparently this is possible](https://github.com/xNul/palworld-host-save-fix/issues/12#issuecomment-1904052304) but I haven't tried it yet. Instructions should be very similar to "How to migrate a co-op save to a Windows dedicated server" but where you use the `00000000000000000000000000000001` GUID as the new GUID and the player's current GUID on the dedicated server as the old GUID.
 
-If someone wants to make sure this kind of migration works and then create the instructions to do it, I'll accept a PR for them.
+If someone wants to make sure this kind of migration works and then create the instructions to do it, I'd accept a PR for them.
 
 ## Known bugs
 
@@ -85,7 +85,7 @@ If someone wants to make sure this kind of migration works and then create the i
 
 ~~Details: Guild membership doesn't work properly after fixing a character. This is likely happening because there's some guild configuration being missed in the character migration from the old save to the new save.~~
 
-~~Workaround: \[Co-op Only\] In co-op, before moving the save, transfer ownership from the co-op host's character to another character and have the co-op host's character leave the guild. Fixes the issue entirely.~~
+~~Workaround: \[Co-op Only\] In co-op, before moving the save, transfer ownership from the co-op host's character to another character and have the co-op host's character leave the guild. Fixes the issue entirely. Doesn't work when all players lose their save data because there is no working player to hold the guild.~~
 
 ### \[Pal bug\]
 
@@ -101,10 +101,10 @@ Workaround: \[Co-op Only\] If you have built a Viewing Cage, it needs to be remo
 
 ### \[Left Click bug\]
 
-Details: After applying the fix, some players experience a bug where you can't hold your left mouse button to attack. It seems like this only happens if you didn't do the \[Guild bug\] workaround but I'm not sure.
+Details: After applying the fix, some players experience a bug where you can't hold your left mouse button to attack. It seems like this only happens if you didn't do the [\[Guild bug\] workaround](#guild-bug) but I'm not sure.
 
 Workaround: If you leave the guild and rejoin, it goes away. Thanks [/u/skalibran](https://www.reddit.com/r/Palworld/comments/19axeqs/autoswing_not_working/kiq85zr/)!
 
-Credit to [cheahjs](https://gist.github.com/cheahjs/300239464dd84fe6902893b6b9250fd0) for his very useful script helping me to make this fix!
+### Credit to [cheahjs](https://gist.github.com/cheahjs/300239464dd84fe6902893b6b9250fd0) for his very useful script helping me to make this fix!
 
-Appreciate any help testing and resolving bugs.
+### Appreciate any help testing and resolving bugs.
