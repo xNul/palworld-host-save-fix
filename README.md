@@ -23,6 +23,8 @@ Dependencies:
 - Python 3
 - [uesave-rs](https://github.com/trumank/uesave-rs)
 
+### Migrate server
+
 Command:    
 `python fix-host-save.py <uesave.exe> <save_path> <new_guid> <old_guid>`    
 `<uesave.exe>` - Path to your uesave.exe    
@@ -32,6 +34,49 @@ Command:
 
 Example:    
 `python fix-host-save.py "C:\Users\John\.cargo\bin\uesave.exe" "C:\Users\John\Desktop\my_temporary_folder\2E85FD38BAA792EB1D4C09386F3A3CDA" 6E80B1A6000000000000000000000000 00000000000000000000000000000001`
+
+### Change Co-op host
+
+Prepare:
+
+Fill `uesave_path`、`save_path` and `player_list` in *config.json*, for example:
+
+```json
+{
+  "uesave_path": "C:\Users\John\.cargo\bin\uesave.exe",
+  "save_path": "C:\Users\John\Desktop\my_temporary_folder\2E85FD38BAA792EB1D4C09386F3A3CDA",
+  "player_list": [
+    {
+      "GUID": "6E80B1A6000000000000000000000000",
+      "name": "Arthur"
+    },
+    {
+      "GUID": "F5A892D9000000000000000000000000",
+      "name": "John"
+    },
+    {
+      "GUID": "",
+      "name": ""
+    },
+    {
+      "GUID": "",
+      "name": ""
+    },
+    {
+      "GUID": "",
+      "name": ""
+    },
+    {
+      "GUID": "",
+      "name": ""
+    }
+  ]
+}
+```
+
+Command:
+
+`python change_coop_host.py John`
 
 ## How to migrate a co-op save to a Windows dedicated server
 
@@ -78,6 +123,20 @@ Steps:
 [Apparently this is possible](https://github.com/xNul/palworld-host-save-fix/issues/12#issuecomment-1904052304) but I haven't tried it yet. Instructions should be very similar to "How to migrate a co-op save to a Windows dedicated server" but where you use the `00000000000000000000000000000001` GUID as the new GUID and the player's current GUID on the dedicated server as the old GUID.
 
 If someone wants to make sure this kind of migration works and then create the instructions to do it, I'd accept a PR for them.
+
+## How to change host in Local 4-player Co-op game
+
+Prerequisites:
+
+- Install the dependencies [above](#usage).
+- The original host need to get a standard GUID, by joining a friend's world or building and joining a dedicated server, more details can refer to the tutorial above.
+
+Steps:
+
+1. **Make a backup of your save**
+2. Fill `uesave_path`、`save_path` and `player_list` in *config.json*, `player_list` should include all players who have joined this save, you can add more GUID-name pairs if needed. Note that all GUID are standard GUID, not `00000000000000000000000000000001`.
+3. Run *change_coop_host.py* with a `host` parameter, which can be a GUID or just a nickname for convenience, after that this guy will become the new host.
+4. Send this new save to the new host, let he start the game and invite you and other friends.
 
 ## Known bugs
 
