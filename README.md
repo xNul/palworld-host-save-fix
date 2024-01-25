@@ -43,8 +43,8 @@ Fill `uesave_path`、`save_path` and `player_list` in *config.json*, for example
 
 ```json
 {
-  "uesave_path": "C:\Users\John\.cargo\bin\uesave.exe",
-  "save_path": "C:\Users\John\Desktop\my_temporary_folder\2E85FD38BAA792EB1D4C09386F3A3CDA",
+  "uesave_path": "C:\\Users\\John\\.cargo\\bin\\uesave.exe",
+  "save_path": "C:\\Users\\John\\Desktop\\my_temporary_folder\\2E85FD38BAA792EB1D4C09386F3A3CDA",
   "player_list": [
     {
       "GUID": "6E80B1A6000000000000000000000000",
