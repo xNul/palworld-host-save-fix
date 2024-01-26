@@ -104,7 +104,7 @@ To find a player's GUID, you can use the following steps:
 
 1. Set an admin password in the older server's `PalServer\Pal\Saved\Config\WindowsorLinuxServer\PalWorldSettings.ini` file.
 2. Connect to the older server, open chat, and type `/adminpassword <your_admin_password>`.
-3. Open chat and run `/showplayers`.
+3. Open chat and run `/showplayers` (or you can click `esc` and go to the options page to see and copy your own ID after entering the admin password).
 4. Record the `playeruid` field for each player. 
 5. Use a tool to convert the `playeruid` number to hexadecimal. For example, you can run
 ```bash
