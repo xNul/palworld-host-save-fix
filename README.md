@@ -106,9 +106,9 @@ To find a player's GUID, you can use the following steps:
 2. Connect to the older server, open chat, and type `/adminpassword <your_admin_password>`.
 3. Open chat and run `/showplayers` (or you can click `esc` and go to the options page to see and copy your own ID after entering the admin password).
 4. Record the `playeruid` field for each player. 
-5. Use a tool to convert the `playeruid` number to hexadecimal. For example, you can run
+5. Use a tool to convert the `playeruid` number to 8-character hexadecimal GUID prefix. For example, you can run
 ```bash
-python -c "print(hex(<your_player_id>))"
+python -c "print(format(<your_player_id_number>, '08x'))"
 ```
 6. The output of the command is the prefix player's GUID (i.e. find the `.sav` file that starts with the output).
 7. Repeat the steps for the new server if needed.
