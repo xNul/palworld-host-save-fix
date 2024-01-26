@@ -26,14 +26,14 @@ Dependencies:
 ### Migrate server
 
 Command:    
-`python fix-host-save.py <uesave.exe> <save_path> <new_guid> <old_guid>`    
+`python fix_host_save.py <uesave.exe> <save_path> <new_guid> <old_guid>`    
 `<uesave.exe>` - Path to your uesave.exe    
 `<save_path>` - Path to your save folder    
 `<new_guid>` - GUID of the player on the new server    
 `<old_guid>` - GUID of the player from the old server
 
 Example:    
-`python fix-host-save.py "C:\Users\John\.cargo\bin\uesave.exe" "C:\Users\John\Desktop\my_temporary_folder\2E85FD38BAA792EB1D4C09386F3A3CDA" 6E80B1A6000000000000000000000000 00000000000000000000000000000001`
+`python fix_host_save.py "C:\Users\John\.cargo\bin\uesave.exe" "C:\Users\John\Desktop\my_temporary_folder\2E85FD38BAA792EB1D4C09386F3A3CDA" 6E80B1A6000000000000000000000000 00000000000000000000000000000001`
 
 ### Change Co-op host
 
