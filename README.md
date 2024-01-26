@@ -12,7 +12,7 @@ Fixes the bug which forces a player to create a new character when they already 
   - [How to migrate a co-op save to a Windows dedicated server](#how-to-migrate-a-co-op-save-to-a-windows-dedicated-server)
   - [How to migrate a Windows/Linux dedicated server save to a Linux/Windows dedicated server](#how-to-migrate-a-windowslinux-dedicated-server-save-to-a-linuxwindows-dedicated-server)
   - [How to migrate a Windows dedicated server save to co-op](#how-to-migrate-a-windows-dedicated-server-save-to-co-op)
-- [Finding Player IDs](#finding-player-ids)
+- [Finding Player GUIDs](#finding-player-guids)
 - [Known bugs](#known-bugs)
   - [~~\[Guild bug\]~~](#guild-bug)
   - [\[Pal bug\]](#pal-bug)
@@ -98,7 +98,7 @@ Steps:
 
 If someone wants to make sure this kind of migration works and then create the instructions to do it, I'd accept a PR for them.
 
-## Finding Player IDs
+## Finding Player GUIDs
 
 To find a player's GUID, you can use the following steps:
 
