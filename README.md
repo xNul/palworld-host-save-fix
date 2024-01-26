@@ -108,7 +108,7 @@ To find a player's GUID, you can use the following steps:
 4. Record the `playeruid` field for each player. 
 5. Use a tool to convert the `playeruid` number to hexadecimal. For example, you can run
 ```bash
-python -c "print(hex(<your-player-id>))"
+python -c "print(hex(<your_player_id>))"
 ```
 6. The output of the command is the prefix player's GUID (i.e. find the `.sav` file that starts with the output).
 7. Repeat the steps for the new server if needed.
