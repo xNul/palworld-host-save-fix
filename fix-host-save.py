@@ -65,11 +65,11 @@ of your save folder before continuing. Press enter if you would like to continue
     if not os.path.exists(save_path):
         print('ERROR: Your given <save_path> of "' + save_path + '" does not exist. Did you enter the correct path to your save folder?')
         exit(1)
-    
-    # The player needs to have created a character on the dedicated server and that save is used for this script.
-    if not os.path.exists(new_sav_path):
-        print('ERROR: Your player save does not exist. Did you enter the correct new GUID of your player? It should look like "8E910AC2000000000000000000000000".\nDid your player create their character with the provided save? Once they create their character, a file called "' + new_sav_path + '" should appear. Look back over the steps in the README on how to get your new GUID.')
-        exit(1)
+
+    # Check if new GUID file already exists
+	if os.path.exists(new_sav_path):
+		print('ERROR: A file with the given <new_guid> does already exist. Please provide a free GUID')
+		exit(1)
     
     # Convert save files to JSON so it is possible to edit them.
     sav_to_json(uesave_path, level_sav_path)
