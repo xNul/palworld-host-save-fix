@@ -4,6 +4,23 @@
 
 Fixes the bug which forces a player to create a new character when they already have a save.
 
+## Table of Contents
+
+- [Abstract](#abstract)
+- [Usage](#usage)
+- [Migration Examples](#migration-examples)
+  - [How to migrate a co-op save to a Windows dedicated server](#how-to-migrate-a-co-op-save-to-a-windows-dedicated-server)
+  - [How to migrate a Windows/Linux dedicated server save to a Linux/Windows dedicated server](#how-to-migrate-a-windowslinux-dedicated-server-save-to-a-linuxwindows-dedicated-server)
+  - [How to migrate a Windows dedicated server save to co-op](#how-to-migrate-a-windows-dedicated-server-save-to-co-op)
+- [Finding Player IDs](#finding-player-ids)
+- [Known bugs](#known-bugs)
+  - [~~\[Guild bug\]~~](#guild-bug)
+  - [\[Pal bug\]](#pal-bug)
+  - [\[Viewing Cage bug\]](#viewing-cage-bug)
+  - [\[Left Click bug\]](#left-click-bug)
+
+## Abstract 
+
 Palworld save files are different depending on the type of server you are running. Co-op, Windows dedicated server, Linux dedicated server, SteamCMD dedicated server, all of these are different types of Palworld servers and if you try to migrate a save file from one type of server to another, you can run into a player save bug which forces you to create a new character.
 
 For example:
@@ -33,7 +50,9 @@ Command:
 Example:    
 `python fix-host-save.py "C:\Users\John\.cargo\bin\uesave.exe" "C:\Users\John\Desktop\my_temporary_folder\2E85FD38BAA792EB1D4C09386F3A3CDA" 6E80B1A6000000000000000000000000 00000000000000000000000000000001`
 
-## How to migrate a co-op save to a Windows dedicated server
+## Migration Examples
+
+### How to migrate a co-op save to a Windows dedicated server
 
 Prerequisites:
 - Install the dependencies [above](#usage).
@@ -55,7 +74,7 @@ Steps:
 12. Start the server back up and have the co-op host join the server with their fixed character.
 13. If, after 5 minutes of play, your Pals won't attack for you or do work in the base, follow the [\[Pal bug\] workaround](#pal-bug) to fix them.
 
-## How to migrate a Windows/Linux dedicated server save to a Linux/Windows dedicated server
+### How to migrate a Windows/Linux dedicated server save to a Linux/Windows dedicated server
 
 Prerequisites:
 - Install the dependencies [above](#usage).
@@ -73,11 +92,26 @@ Steps:
 9. Start the server back up and have each player join the server with their fixed character.
 10. If, after 5 minutes of play, a player's Pals won't attack for them or do work in their base, have them follow the [\[Pal bug\] workaround](#pal-bug) to fix them.
 
-## How to migrate a Windows dedicated server save to co-op
+### How to migrate a Windows dedicated server save to co-op
 
 [Apparently this is possible](https://github.com/xNul/palworld-host-save-fix/issues/12#issuecomment-1904052304) but I haven't tried it yet. Instructions should be very similar to "How to migrate a co-op save to a Windows dedicated server" but where you use the `00000000000000000000000000000001` GUID as the new GUID and the player's current GUID on the dedicated server as the old GUID.
 
 If someone wants to make sure this kind of migration works and then create the instructions to do it, I'd accept a PR for them.
+
+## Finding Player IDs
+
+To find a player's GUID, you can use the following steps:
+
+1. Set an admin password in the older server's `PalServer\Pal\Saved\Config\WindowsorLinuxServer\PalWorldSettings.ini` file.
+2. Connect to the older server, open chat, and type `/adminpassword <your_admin_password>`.
+3. Open chat and run `/showplayers`.
+4. Record the `playeruid` field for each player. 
+5. Use a tool to convert the `playeruid` number to hexadecimal. For example, you can run
+```bash
+python -c "print(hex(<your-player-id>))"
+```
+6. The output of the command is the prefix player's GUID (i.e. find the `.sav` file that starts with the output).
+7. Repeat the steps for the new server if needed.
 
 ## Known bugs
 
