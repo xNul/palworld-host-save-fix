@@ -66,11 +66,11 @@ of your save folder before continuing. Press enter if you would like to continue
         print('ERROR: Your given <save_path> of "' + save_path + '" does not exist. Did you enter the correct path to your save folder?')
         exit(1)
 
-    # Check if new GUID file already exists
-	if os.path.exists(new_sav_path):
-		print('ERROR: A file with the given <new_guid> does already exist. Please provide a free GUID')
-		exit(1)
-    
+    # Check if new GUID file already exist
+    if os.path.exists(new_sav_path):
+        print('ERROR: A file with the given <new_guid> does already exist. Please provide a free GUID')
+        exit(1)
+
     # Convert save files to JSON so it is possible to edit them.
     sav_to_json(uesave_path, level_sav_path)
     sav_to_json(uesave_path, old_sav_path)
