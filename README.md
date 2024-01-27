@@ -136,7 +136,8 @@ Steps:
 1. **Make a backup of your save**
 2. Fill `uesave_path`、`save_path` and `player_list` in *config.json*, `player_list` should include all players who have joined this save, you can add more GUID-name pairs if needed. Note that all GUID are standard GUID, not `00000000000000000000000000000001`.
 3. Run *change_coop_host.py* with a `host` parameter, which can be a GUID or just a nickname for convenience, after that this guy will become the new host.
-4. Send this new save to the new host, let he start the game and invite you and other friends.
+4. Send this new save to the new host, and replace *LocalData.sav* from this new save file with that from the original save file of the new host, since *LocalData.sav* saves personal map and tutorial data.
+5. Let the new host starts the game and invites you and other friends.
 
 ## Known bugs
 
