@@ -25,16 +25,17 @@ Dependencies:
 
 Command:    
 ```
-python fix-host-save.py <uesave.exe> <save_path> <new_guid> <old_guid>
+python fix-host-save.py <uesave.exe> <save_path> <new_guid> <old_guid> <guild_fix>
 ```    
 `<uesave.exe>` - Path to your uesave.exe    
 `<save_path>` - Path to your save folder    
 `<new_guid>` - GUID of the player on the new server    
 `<old_guid>` - GUID of the player from the old server
+`<guild_fix>` - True or False. Apply the fix for the [\[Guild bug\]](#guild-bug).
 
 Example:    
 ```
-python fix-host-save.py "C:\Users\John\.cargo\bin\uesave.exe" "C:\Users\John\Desktop\my_temporary_folder\2E85FD38BAA792EB1D4C09386F3A3CDA" 6E80B1A6000000000000000000000000 00000000000000000000000000000001
+python fix-host-save.py "C:\Users\John\.cargo\bin\uesave.exe" "C:\Users\John\Desktop\my_temporary_folder\2E85FD38BAA792EB1D4C09386F3A3CDA" 6E80B1A6000000000000000000000000 00000000000000000000000000000001 False
 ```
 
 ## How to migrate a co-op save to a Windows dedicated server
@@ -43,6 +44,7 @@ python fix-host-save.py "C:\Users\John\.cargo\bin\uesave.exe" "C:\Users\John\Des
 Prerequisites:
 - Install the dependencies [above](#usage).
 - The dedicated server is installed, running, and you're able to join it.
+- Follow the workaround [below](#guild-bug) for the \[Guild bug\] in co-op before moving the save.
 - If you have a Viewing Cage, follow the workaround [below](#viewing-cage-bug) for the \[Viewing Cage bug\] in co-op before moving the save.
 
 Steps:
@@ -55,13 +57,15 @@ Steps:
 7. Shut the server down and then copy the entire save folder in the dedicated server at `PalServer\Pal\Saved\SaveGames\0\<your_save_here>` (it must be the save folder with the co-op host's new character!) into a temporary folder and remember the path for the temporary folder because it's needed to run the script.
 8. If you have not already done so, install [uesave-rs](https://github.com/trumank/uesave-rs) and get the file path to its install location. If the path does not have `uesave.exe` at the end, it's wrong.
 9. **Make a backup of your save folder!** This is an experimental script and has known bugs so always keep a backup copy of your save folder.
-10. Run the script using the command in the [Usage section](#usage) with the information you've gathered and using `00000000000000000000000000000001` as the co-op host's old GUID.
+10. Run the script using the command in the [Usage section](#usage) with the information you've gathered, using `00000000000000000000000000000001` as the co-op host's old GUID, and make sure to set `<guild_fix>` to `False`.
 11. Copy the save folder from the temporary folder back to the dedicated server. Move the save folder you had in the dedicated server somewhere else or rename it to something different.
 12. Start the server back up and have the co-op host join the server with their fixed character.
 13. If, after 5 minutes of play, your Pals won't attack for you or do work in the base, follow the [\[Pal bug\] workaround](#pal-bug) to fix them.
 
 ## How to migrate a Windows/Linux dedicated server save to a Linux/Windows dedicated server
 *No player, co-op host or otherwise, is able to use their character on the dedicated server.*
+
+Note: This method relies on the \[Guild bug\] fix even though the fix itself has bugs because with this migration process, every player loses access to their character and they all have to be fixed so there is no 'good' character who can hold the guild for other players as in the co-op to dedicated server migration process [above](#how-to-migrate-a-co-op-save-to-a-windows-dedicated-server). Progress on the \[Guild bug\] fix is ongoing and it will hopefully be completely fixed soon.
 
 Prerequisites:
 - Install the dependencies [above](#usage).
@@ -74,7 +78,7 @@ Steps:
 4. Shut the server down and then copy the entire save folder from the new server at `PalServer\Pal\Saved\SaveGames\0\<your_save_here>` (it must be the save folder with all the new characters!) into a temporary folder and remember the path for the temporary folder because it's needed to run the script.
 5. If you have not already done so, install [uesave-rs](https://github.com/trumank/uesave-rs) and get the file path to its install location. If the path does not have `uesave.exe` at the end, it's wrong.
 6. **Make a backup of your save folder!** This is an experimental script and has known bugs so always keep a backup copy of your save folder.
-7. For each player's corresponding new GUID and old GUID pair, run the script using the command in the [Usage section](#usage).
+7. For each player's corresponding new GUID and old GUID pair, run the script using the command in the [Usage section](#usage) and make sure to set `<guild_fix>` to `True`.
 8. Copy the save folder from the temporary folder back to the dedicated server. Move the save folder you had in the dedicated server somewhere else or rename it to something different.
 9. Start the server back up and have each player join the server with their fixed character.
 10. If, after 5 minutes of play, a player's Pals won't attack for them or do work in their base, have them follow the [\[Pal bug\] workaround](#pal-bug) to fix them.
@@ -87,13 +91,11 @@ If someone wants to make sure this kind of migration works and then create the i
 
 ## Known bugs
 
-### ~~\[Guild bug\]~~
+### \[Guild bug\]
 
-**\*\* Has likely been fixed by https://github.com/xNul/palworld-host-save-fix/pull/18. \*\***
+Details: Guild membership doesn't work properly after fixing a character. This is likely happening because there's some guild configuration being missed in the character migration from the old save to the new save.
 
-~~Details: Guild membership doesn't work properly after fixing a character. This is likely happening because there's some guild configuration being missed in the character migration from the old save to the new save.~~
-
-~~Workaround: \[Co-op Only\] In co-op, before moving the save, transfer ownership from the co-op host's character to another character and have the co-op host's character leave the guild. Fixes the issue entirely. Doesn't work when all players lose their save data because there is no working player to hold the guild.~~
+Workaround: \[Co-op Only\] In co-op, before moving the save, transfer ownership from the co-op host's character to another character and have the co-op host's character leave the guild. Fixes the issue entirely. Doesn't work when all players lose their save data because there is no working player to hold the guild.
 
 ### \[Pal bug\]
 
