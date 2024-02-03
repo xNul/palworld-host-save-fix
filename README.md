@@ -24,11 +24,13 @@ Dependencies:
 - [uesave-rs](https://github.com/trumank/uesave-rs)
 
 Using the GUI:
-- Open command prompt in folder
+- Open Command Prompt in the folder
 - Run command `python gui.py`
-- Select uesave location and your world save folder
-- Select old GUID and new GUID from the dropdowns
-- Hit the button
+- Select the location of uesave.exe and your save folder
+- Select your old GUID and your new GUID from the dropdowns
+- Enable the guild fix if required
+- Hit the button to run the command
+- Read the warning in Command Prompt
 
 Command:    
 ```
