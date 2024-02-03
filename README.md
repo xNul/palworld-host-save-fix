@@ -23,6 +23,13 @@ Dependencies:
 - Python >=3.10
 - [uesave-rs](https://github.com/trumank/uesave-rs)
 
+Using the GUI:
+- Open command prompt in folder
+- Run command `python gui.py`
+- Select uesave location and your world save folder
+- Select old GUID and new GUID from the dropdowns
+- Hit the button
+
 Command:    
 ```
 python fix-host-save.py <uesave.exe> <save_path> <new_guid> <old_guid> <guild_fix>
