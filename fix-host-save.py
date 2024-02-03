@@ -132,7 +132,7 @@ of your save folder before continuing. Press enter if you would like to continue
         for i in range(group_ids_len):
             group_id = level_json["root"]["properties"]["worldSaveData"]["Struct"]["value"]["Struct"]["GroupSaveDataMap"]["Map"]["value"][i]
             if group_id["value"]["Struct"]["Struct"]["GroupType"]["Enum"]["value"] == "EPalGroupType::Guild":
-                group_raw_data =  group_id["value"]["Struct"]["Struct"]["RawData"]["Array"]["value"]["Base"]["Byte"]["Byte"]
+                group_raw_data = group_id["value"]["Struct"]["Struct"]["RawData"]["Array"]["value"]["Base"]["Byte"]["Byte"]
                 raw_data_len = len(group_raw_data)
                 for j in range(raw_data_len-15):
                     if group_raw_data[j:j+16] == old_level_formatted:
