@@ -30,7 +30,7 @@ python fix-host-save.py <uesave.exe> <save_path> <new_guid> <old_guid> <guild_fi
 `<uesave.exe>` - Path to your uesave.exe    
 `<save_path>` - Path to your save folder    
 `<new_guid>` - GUID of the player on the new server    
-`<old_guid>` - GUID of the player from the old server
+`<old_guid>` - GUID of the player from the old server    
 `<guild_fix>` - True or False. Apply the fix for the [\[Guild bug\]](#guild-bug).
 
 Example:    
