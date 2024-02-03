@@ -29,6 +29,18 @@ of your save folder before continuing. Press enter if you would like to continue
     new_guid = sys.argv[3]
     old_guid = sys.argv[4]
     
+    if new_guid[-4:] == '.sav' or old_guid[-4:] == '.sav':
+        print('ERROR: It looks like you\'re providing the whole name of the file instead of just the GUID. For example, instead of using "<GUID>.sav" in the command, you should be using only the GUID.')
+        exit(1)
+    
+    if len(new_guid) != 32:
+        print('ERROR: Your <new_guid> should be 32 characters long, but it is ' + str(len(new_guid)) + ' characters long. Make sure you copied the exact GUID.')
+        exit(1)
+    
+    if len(old_guid) != 32:
+        print('ERROR: Your <old_guid> should be 32 characters long, but it is ' + str(len(old_guid)) + ' characters long. Make sure you copied the exact GUID.')
+        exit(1)
+    
     # Apply expected formatting for the GUID.
     new_guid_formatted = '{}-{}-{}-{}-{}'.format(new_guid[:8], new_guid[8:12], new_guid[12:16], new_guid[16:20], new_guid[20:]).lower()
     old_level_formatted = ''
@@ -72,18 +84,21 @@ of your save folder before continuing. Press enter if you would like to continue
         exit(1)
     
     # Convert save files to JSON so it is possible to edit them.
+    print('Converting save files to JSON...', flush=True)
     sav_to_json(uesave_path, level_sav_path)
     sav_to_json(uesave_path, old_sav_path)
-    print('Converted save files to JSON')
+    print('Done!', flush=True)
     
     # Parse our JSON files.
+    print('Parsing JSON files...', end='', flush=True)
     with open(old_json_path) as f:
         old_json = json.load(f)
     with open(level_json_path) as f:
         level_json = json.load(f)
-    print('JSON files have been parsed')
+    print('Done!', flush=True)
     
     # Replace all instances of the old GUID with the new GUID.
+    print('Modifying JSON save data...', end='', flush=True)
     
     # Player data replacement.
     old_json["root"]["properties"]["SaveData"]["Struct"]["value"]["Struct"]["PlayerUId"]["Struct"]["value"]["Guid"] = new_guid_formatted
@@ -108,24 +123,27 @@ of your save folder before continuing. Press enter if you would like to continue
            for i in range(raw_data_len-15):
                if group_raw_data[i:i+16] == old_level_formatted:
                   group_raw_data[i:i+16] = new_level_formatted
-    print('Changes have been made')
+    print('Done!', flush=True)
     
     # Dump modified data to JSON.
+    print('Exporting JSON data...', end='', flush=True)
     with open(old_json_path, 'w') as f:
         json.dump(old_json, f, indent=2)
     with open(level_json_path, 'w') as f:
         json.dump(level_json, f, indent=2)
-    print('JSON files have been exported')
+    print('Done!')
     
     # Convert our JSON files to save files.
+    print('Converting JSON files back to save files...', flush=True)
     json_to_sav(uesave_path, level_json_path)
     json_to_sav(uesave_path, old_json_path)
-    print('Converted JSON files back to save files')
+    print('Done!', flush=True)
     
     # Clean up miscellaneous GVAS and JSON files which are no longer needed.
+    print('Cleaning up miscellaneous files...', end='', flush=True)
     clean_up_files(level_sav_path)
     clean_up_files(old_sav_path)
-    print('Miscellaneous files removed')
+    print('Done!', flush=True)
     
     # We must rename the patched save file from the old GUID to the new GUID for the server to recognize it.
     if os.path.exists(new_sav_path):
