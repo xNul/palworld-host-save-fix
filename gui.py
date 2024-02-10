@@ -40,21 +40,19 @@ def update_guid_dropdowns():
         combo_old_guid['values'] = file_names
 
 def run_command():
-    uesave_path = entry_uesave.get()
     save_path = entry_save.get()
     new_guid = combo_new_guid.get()
     old_guid = combo_old_guid.get()
     guild_fix = guild_fix_var.get()
     
     command = (
-        f'python fix-host-save.py "{uesave_path}" "{save_path}" {new_guid.replace(".sav", "")} {old_guid.replace(".sav", "")} {guild_fix}'
+        f'python fix-host-save.py "{save_path}" {new_guid.replace(".sav", "")} {old_guid.replace(".sav", "")} {guild_fix}'
     )
     subprocess.run(command, shell=True)
     update_guid_dropdowns()
 
 def save_config():
     config = {
-        'uesave_path': entry_uesave.get(),
         'save_path': entry_save.get(),
         'new_guid': combo_new_guid.get(),
         'old_guid': combo_old_guid.get(),
@@ -70,7 +68,6 @@ def load_config():
     if os.path.exists(config_file):
         with open(config_file, 'r') as f:
             config = json.load(f)
-            entry_uesave.insert(0, config.get('uesave_path', ''))
             entry_save.insert(0, config.get('save_path', ''))
             update_guid_dropdowns()
             combo_new_guid.set(config.get('new_guid', ''))
@@ -79,16 +76,6 @@ def load_config():
 
 app = tk.Tk()
 app.title('Fix Host Save Command GUI')
-
-# Uesave.exe path.
-tk.Label(app, text='Path to uesave.exe:').pack()
-entry_uesave = tk.Entry(app, width=50)
-entry_uesave.pack()
-entry_uesave.bind('<KeyRelease>', on_entry_change)
-button_browse_uesave = tk.Button(
-    app, text='Browse', command=lambda: browse_file(entry_uesave)
-)
-button_browse_uesave.pack()
 
 # Save folder path.
 tk.Label(app, text='Path to save folder:').pack()

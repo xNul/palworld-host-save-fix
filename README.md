@@ -21,12 +21,12 @@ To fix this bug, we've made a script that takes the GUID of the player on the ne
 
 Dependencies:
 - Python >=3.10
-- [uesave-rs](https://github.com/trumank/uesave-rs)
+- Install [Palworld Save Tools v0.17.1](https://github.com/cheahjs/palworld-save-tools) with `pip install palworld-save-tools==0.17.1`
+- Clone the repository with `git clone https://github.com/xNul/palworld-host-save-fix`
 
 Using the GUI:
 - Open Command Prompt in the folder
 - Run command `python gui.py`
-- Select the location of uesave.exe and your save folder
 - Select your old GUID and your new GUID from the dropdowns
 - Enable the guild fix if required
 - Hit the button to run the command
@@ -34,9 +34,8 @@ Using the GUI:
 
 Command:    
 ```
-python fix-host-save.py <uesave.exe> <save_path> <new_guid> <old_guid> <guild_fix>
-```    
-`<uesave.exe>` - Path to your uesave.exe    
+python fix-host-save.py <save_path> <new_guid> <old_guid> <guild_fix>
+```      
 `<save_path>` - Path to your save folder    
 `<new_guid>` - GUID of the player on the new server    
 `<old_guid>` - GUID of the player from the old server    
@@ -44,7 +43,7 @@ python fix-host-save.py <uesave.exe> <save_path> <new_guid> <old_guid> <guild_fi
 
 Example:    
 ```
-python fix-host-save.py "C:\Users\John\.cargo\bin\uesave.exe" "C:\Users\John\Desktop\my_temporary_folder\2E85FD38BAA792EB1D4C09386F3A3CDA" 6E80B1A6000000000000000000000000 00000000000000000000000000000001 False
+python fix-host-save.py "C:\Users\John\Desktop\my_temporary_folder\2E85FD38BAA792EB1D4C09386F3A3CDA" 6E80B1A6000000000000000000000000 00000000000000000000000000000001 False
 ```
 
 ## How to migrate a co-op save to a Windows dedicated server
@@ -64,12 +63,11 @@ Steps:
 5. Afterwards, the co-op host must create a new character on the dedicated server. A new `.sav` file should appear in `PalServer\Pal\Saved\SaveGames\0\<your_save_here>\Players`.
 6. The name of that new `.sav` file is the co-op host's new GUID. We will need the co-op host's new GUID for the script to work.
 7. Shut the server down and then copy the entire save folder in the dedicated server at `PalServer\Pal\Saved\SaveGames\0\<your_save_here>` (it must be the save folder with the co-op host's new character!) into a temporary folder and remember the path for the temporary folder because it's needed to run the script.
-8. If you have not already done so, install [uesave-rs](https://github.com/trumank/uesave-rs) and get the file path to its install location. If the path does not have `uesave.exe` at the end, it's wrong.
-9. **Make a backup of your save folder!** This is an experimental script and has known bugs so always keep a backup copy of your save folder.
-10. Run the script using the command in the [Usage section](#usage) with the information you've gathered, using `00000000000000000000000000000001` as the co-op host's old GUID, and make sure to set `<guild_fix>` to `False`.
-11. Copy the save folder from the temporary folder back to the dedicated server. Move the save folder you had in the dedicated server somewhere else or rename it to something different.
-12. Start the server back up and have the co-op host join the server with their fixed character.
-13. If, after 5 minutes of play, your Pals won't attack for you or do work in the base, follow the [\[Pal bug\] workaround](#pal-bug) to fix them.
+8. **Make a backup of your save folder!** This is an experimental script and has known bugs so always keep a backup copy of your save folder.
+9. Run the script using the command in the [Usage section](#usage) with the information you've gathered, using `00000000000000000000000000000001` as the co-op host's old GUID, and make sure to set `<guild_fix>` to `False`.
+10. Copy the save folder from the temporary folder back to the dedicated server. Move the save folder you had in the dedicated server somewhere else or rename it to something different.
+11. Start the server back up and have the co-op host join the server with their fixed character.
+12. If, after 5 minutes of play, your Pals won't attack for you or do work in the base, follow the [\[Pal bug\] workaround](#pal-bug) to fix them.
 
 ## How to migrate a Windows/Linux dedicated server save to a Linux/Windows dedicated server
 *No player, co-op host or otherwise, is able to use their character on the dedicated server.*
@@ -85,12 +83,11 @@ Steps:
 2. In the `PalServer\Pal\Saved\Config\WindowsorLinuxServer\GameUserSettings.ini` file of the new server, change the `DedicatedServerName` to match your save folder's name. For example, if your save folder's name is `2E85FD38BAA792EB1D4C09386F3A3CDA`, the `DedicatedServerName` changes to `DedicatedServerName=2E85FD38BAA792EB1D4C09386F3A3CDA`.
 3. Start the new server and have every player create a new character. When a player creates a new character, a new `.sav` file will appear in `PalServer\Pal\Saved\SaveGames\0\<your_save_here>\Players`. The name of that new `.sav` file is the player's new GUID. Make sure to keep track of all old GUIDs, new GUIDs, and which player they belong to.
 4. Shut the server down and then copy the entire save folder from the new server at `PalServer\Pal\Saved\SaveGames\0\<your_save_here>` (it must be the save folder with all the new characters!) into a temporary folder and remember the path for the temporary folder because it's needed to run the script.
-5. If you have not already done so, install [uesave-rs](https://github.com/trumank/uesave-rs) and get the file path to its install location. If the path does not have `uesave.exe` at the end, it's wrong.
-6. **Make a backup of your save folder!** This is an experimental script and has known bugs so always keep a backup copy of your save folder.
-7. For each player's corresponding new GUID and old GUID pair, run the script using the command in the [Usage section](#usage) and make sure to set `<guild_fix>` to `True`.
-8. Copy the save folder from the temporary folder back to the dedicated server. Move the save folder you had in the dedicated server somewhere else or rename it to something different.
-9. Start the server back up and have each player join the server with their fixed character.
-10. If, after 5 minutes of play, a player's Pals won't attack for them or do work in their base, have them follow the [\[Pal bug\] workaround](#pal-bug) to fix them.
+5. **Make a backup of your save folder!** This is an experimental script and has known bugs so always keep a backup copy of your save folder.
+6. For each player's corresponding new GUID and old GUID pair, run the script using the command in the [Usage section](#usage) and make sure to set `<guild_fix>` to `True`.
+7. Copy the save folder from the temporary folder back to the dedicated server. Move the save folder you had in the dedicated server somewhere else or rename it to something different.
+8. Start the server back up and have each player join the server with their fixed character.
+9. If, after 5 minutes of play, a player's Pals won't attack for them or do work in their base, have them follow the [\[Pal bug\] workaround](#pal-bug) to fix them.
 
 ## How to migrate a Windows dedicated server save to co-op
 
