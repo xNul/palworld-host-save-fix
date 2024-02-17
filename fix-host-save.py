@@ -85,11 +85,25 @@ of your save folder before continuing. Press enter if you would like to continue
         instance_id = level_json['properties']['worldSaveData']['value']['CharacterSaveParameterMap']['value'][i]['key']['InstanceId']['value']
         if instance_id == old_instance_id:
             level_json['properties']['worldSaveData']['value']['CharacterSaveParameterMap']['value'][i]['key']['PlayerUId']['value'] = new_guid_formatted
-            break
+            
+        # Pal owner replacement
+        save_parameter_value = level_json['properties']['worldSaveData']['value']['CharacterSaveParameterMap']['value'][i]['value']['RawData']['value']['object']['SaveParameter']['value']
+        if 'OwnerPlayerUId' in save_parameter_value:
+            owner_id = save_parameter_value['OwnerPlayerUId']['value']
+            if owner_id == old_guid:
+                level_json['properties']['worldSaveData']['value']['CharacterSaveParameterMap']['value'][i]['value']['RawData']['value']['object']['SaveParameter']['value']['OwnerPlayerUId']['value'] = new_guid_formatted
+         
+        # Pal old owner replacement
+        if 'OldOwnerPlayerUIds' in save_parameter_value:
+            old_owners = save_parameter_value['OldOwnerPlayerUIds']['value']['values']
+            for j in range(len(old_owners)):
+                if old_owners[j] == old_guid:
+                    level_json['properties']['worldSaveData']['value']['CharacterSaveParameterMap']['value'][i]['value']['RawData']['value']['object']['SaveParameter']['value']['OldOwnerPlayerUIds']['value']['values'][j] = new_guid_formatted
     
     # Guild data replacement.
     if guild_fix:
         group_ids_len = len(level_json['properties']['worldSaveData']['value']['GroupSaveDataMap']['value'])
+        previous_guild_id = ""
         for i in range(group_ids_len):
             group_id = level_json['properties']['worldSaveData']['value']['GroupSaveDataMap']['value'][i]
             if group_id['value']['GroupType']['value']['value'] == 'EPalGroupType::Guild':
@@ -105,6 +119,18 @@ of your save folder before continuing. Press enter if you would like to continue
                     for j in range(len(group_data['players'])):
                         if old_guid_formatted == group_data['players'][j]['player_uid']:
                             group_data['players'][j]['player_uid'] = new_guid_formatted
+                            previous_guild_id = group_id['key']
+                            
+        # Fix double guild - When the user was already in a guild, user will have he's previous one and the default empty one
+        if previous_guild_id != "":
+            for i in range(group_ids_len):
+                group_id = level_json['properties']['worldSaveData']['value']['GroupSaveDataMap']['value'][i]
+                if group_id['value']['GroupType']['value']['value'] == 'EPalGroupType::Guild' and group_id['key'] != previous_guild_id:
+                        if not group_id['value']['RawData']['value']['base_ids']:
+                            level_json['properties']['worldSaveData']['value']['GroupSaveDataMap']['value'].pop(i)
+                            key = group_id['key']
+                            break
+        
     print('Done!', flush=True)
     
     # Convert JSON back to save files.
