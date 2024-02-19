@@ -27,10 +27,11 @@ Dependencies:
 Using the GUI:
 - Open Command Prompt in the folder
 - Run command `python gui.py`
-- Select your old GUID and your new GUID from the dropdowns
+- Browse for your save folder
+- Select the new character to overwrite and the old character you want to fix/keep from the dropdowns
 - Enable the guild fix if required
 - Hit the button to run the command
-- Read the warning in Command Prompt
+- Read the warning in Command Prompt and press enter
 
 Command:    
 ```

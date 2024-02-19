@@ -1,27 +1,23 @@
-import tkinter as tk
-from tkinter import filedialog, ttk
-import subprocess
 import json
 import os
+import subprocess
+import tkinter as tk
+from tkinter import filedialog, ttk
 
+from fix_host_save import sav_to_json
+
+guid_cache = {}
 config_file = 'config.json'
-
-def browse_file(entry):
-    filename = filedialog.askopenfilename()
-    if filename != '':
-        entry.delete(0, tk.END)
-        entry.insert(0, filename)
-        save_config()
 
 def browse_folder(entry):
     foldername = filedialog.askdirectory()
     if foldername != '':
+        guid_cache = {}
         entry.delete(0, tk.END)
         entry.insert(0, foldername)
         save_config()
         update_guid_dropdowns()
 
-# Remove the '.sav' extension.
 def update_guid_dropdowns():
     folder_path = entry_save.get()
     players_folder = os.path.join(folder_path, 'Players')
@@ -32,17 +28,41 @@ def update_guid_dropdowns():
             for f in os.listdir(players_folder)
             if os.path.isfile(os.path.join(players_folder, f)) and f.endswith('.sav')
         ]
-        if not combo_new_guid.get() in file_names:
+        
+        global guid_cache
+        if file_names != list(guid_cache.keys()):
+            level_json = sav_to_json(folder_path + '/Level.sav')
+            usernames = [
+                find_guid_info(level_json, guid)
+                for guid in file_names
+            ]
+            guid_cache = dict(zip(file_names, usernames))
+        else:
+            usernames = list(guid_cache.values())
+        
+        if not combo_new_guid.get() in usernames:
             combo_new_guid.set('')
-        if not combo_old_guid.get() in file_names:
+        if not combo_old_guid.get() in usernames:
             combo_old_guid.set('')
-        combo_new_guid['values'] = file_names
-        combo_old_guid['values'] = file_names
+        combo_new_guid['values'] = usernames
+        combo_old_guid['values'] = usernames
+
+def find_guid_info(level_json, guid):
+    guid_formatted = '{}-{}-{}-{}-{}'.format(guid[:8], guid[8:12], guid[12:16], guid[16:20], guid[20:]).lower()
+    
+    character_save_parameter_map = level_json['properties']['worldSaveData']['value']['CharacterSaveParameterMap']['value']
+    for i in range(len(character_save_parameter_map)):
+        candidate_guid_formatted = character_save_parameter_map[i]['key']['PlayerUId']['value']
+        save_parameter = character_save_parameter_map[i]['value']['RawData']['value']['object']['SaveParameter']['value']
+        if guid_formatted == candidate_guid_formatted and 'IsPlayer' in save_parameter and save_parameter['IsPlayer']['value'] == True:
+            return save_parameter['NickName']['value'] + ' (Lvl. ' + (str(save_parameter['Level']['value']) if 'Level' in save_parameter else '0') + ')'
+    
+    return ''
 
 def run_command():
     save_path = entry_save.get()
-    new_guid = combo_new_guid.get()
-    old_guid = combo_old_guid.get()
+    new_guid = list(guid_cache.keys())[combo_new_guid.current()]
+    old_guid = list(guid_cache.keys())[combo_old_guid.current()]
     guild_fix = guild_fix_var.get()
     
     command = (
@@ -88,12 +108,12 @@ button_browse_save = tk.Button(
 button_browse_save.pack()
 
 # New GUID selection.
-tk.Label(app, text='New GUID:').pack()
+tk.Label(app, text='The new character to overwrite:').pack()
 combo_new_guid = ttk.Combobox(app, postcommand=update_guid_dropdowns)
 combo_new_guid.pack()
 
 # Old GUID selection.
-tk.Label(app, text='Old GUID:').pack()
+tk.Label(app, text='The old character to fix/keep:').pack()
 combo_old_guid = ttk.Combobox(app, postcommand=update_guid_dropdowns)
 combo_old_guid.pack()
 
