@@ -34,7 +34,7 @@ Using the GUI:
 
 Command:    
 ```
-python fix-host-save.py <save_path> <new_guid> <old_guid> <guild_fix>
+python fix_host_save.py <save_path> <new_guid> <old_guid> <guild_fix>
 ```      
 `<save_path>` - Path to your save folder    
 `<new_guid>` - GUID of the player on the new server    
@@ -43,7 +43,7 @@ python fix-host-save.py <save_path> <new_guid> <old_guid> <guild_fix>
 
 Example:    
 ```
-python fix-host-save.py "C:\Users\John\Desktop\my_temporary_folder\2E85FD38BAA792EB1D4C09386F3A3CDA" 6E80B1A6000000000000000000000000 00000000000000000000000000000001 False
+python fix_host_save.py "C:\Users\John\Desktop\my_temporary_folder\2E85FD38BAA792EB1D4C09386F3A3CDA" 6E80B1A6000000000000000000000000 00000000000000000000000000000001 False
 ```
 
 ## How to migrate a co-op save to a Windows dedicated server

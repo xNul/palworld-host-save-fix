@@ -10,7 +10,7 @@ from palworld_save_tools.paltypes import PALWORLD_CUSTOM_PROPERTIES, PALWORLD_TY
 
 def main():
     if len(sys.argv) < 5:
-        print('fix-host-save.py <save_path> <new_guid> <old_guid> <guild_fix>')
+        print('fix_host_save.py <save_path> <new_guid> <old_guid> <guild_fix>')
         exit(1)
     
     save_path = sys.argv[1]
