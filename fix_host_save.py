@@ -41,6 +41,11 @@ def main():
         print('ERROR: Your <old_guid> should be 32 characters long, but it is ' + str(len(old_guid)) + ' characters long. Make sure you copied the exact GUID.')
         exit(1)
     
+    # Users accidentally pass the same GUID as the new_guid and old_guid. They should be different.
+    if new_guid == old_guid:
+        print('ERROR: It looks like you\'re using the same GUID for both the <new_guid> and <old_guid> argument. Remember, you\'re moving GUIDs so you need your old one and your new one.')
+        exit(1)
+    
     # Apply expected formatting for the GUID.
     new_guid_formatted = '{}-{}-{}-{}-{}'.format(new_guid[:8], new_guid[8:12], new_guid[12:16], new_guid[16:20], new_guid[20:]).lower()
     old_guid_formatted = '{}-{}-{}-{}-{}'.format(old_guid[:8], old_guid[8:12], old_guid[12:16], old_guid[16:20], old_guid[20:]).lower()
