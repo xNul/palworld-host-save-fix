@@ -2,6 +2,8 @@
 
 > ### :warning: This tool is experimental. Be careful of data loss and *always* make a backup. :warning:
 
+*Note: If you have an advanced co-op map with level 30-40+ characters and can't get the fix to work for you, please open an issue and send the save to me. I have some major and more complete changes in the works but I need mid to late game saves to make sure I get everything and people to confirm it's working correctly before I release.*
+
 Fixes the bug which forces a player to create a new character when they already have a save.
 
 Palworld save files are different depending on the type of server you are running. Co-op, Windows dedicated server, Linux dedicated server, SteamCMD dedicated server, all of these are different types of Palworld servers and if you try to migrate a save file from one type of server to another, you can run into a player save bug which forces you to create a new character.
