@@ -113,11 +113,11 @@ Steps:
 
 ### How to migrate a Windows dedicated server save to co-op
 
-1. Download the save from dedicate server.
-2. Start a new game and create a new character, copy the new character `C:\Users\<username>\AppData\Local\Pal\Saved\SaveGames\<random_numbers>\Players\00000000000000000000000000000001.sav` to `YourServerFolder\Players`
-3. Run `python fix-host-save.py <uesave.exe directory> <server folder> 00000000000000000000000000000001 <Your Character GUID>` (You can find the guid from level.sav, for how to open it in json format, refer to this guide here: (https://github.com/cheahjs/palworld-save-tools))
-4. Once Complete You can drop the file from the `<server folder>` to `C:\Users\<username>\AppData\Local\Pal\Saved\SaveGames\<server_numbers>` 
-5. Start the game and you should be able to play normal now, friends can join in without any issue since there guid remains the same.
+1. Copy the save from the dedicated server to a temporary folder.
+2. Start a new co-op game and create a new character, copy the new character `C:\Users\<username>\AppData\Local\Pal\Saved\SaveGames\<random_numbers>\Players\00000000000000000000000000000001.sav` to `<your_temporary_folder>\<your_save_here>\Players`.
+3. Run the script while using `00000000000000000000000000000001` as the `<new_guid>` and the character you want to be host as the `<old_guid>`.
+4. Once complete, you can copy the save folder from the temporary folder to `C:\Users\<username>\AppData\Local\Pal\Saved\SaveGames`.
+5. Start the game and you should be able to play normally, friends can join in without any issue since there guid remains the same.
 
 ## Finding Player GUIDs
 
