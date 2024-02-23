@@ -59,10 +59,12 @@ def find_players(level_json, filename_guids):
         if player_uid in formatted_guids and 'IsPlayer' in save_parameter and save_parameter['IsPlayer']['value'] == True:
             nickname = save_parameter['NickName']['value']
             level = str(save_parameter['Level']['value']) if 'Level' in save_parameter else '0'
+
             formatted_player_uid = str(player_uid)
+            player_info = f"[{formatted_player_uid[:8]}] {nickname} (Lvl. {level})"
 
             formatted_guids.remove(formatted_player_uid)
-            players[f"[{formatted_player_uid[:8]}] {nickname} (Lvl. {level})"] = player_uid
+            players[player_info] = player_uid
     
     players = dict(sorted(players.items(), key=lambda item: str(item[0])[11:].lower()))
     players.update(dict(zip(
