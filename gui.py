@@ -23,41 +23,57 @@ def update_guid_dropdowns():
     players_folder = os.path.join(folder_path, 'Players')
     if os.path.exists(players_folder) and os.path.isdir(players_folder):
         # List all files and remove the '.sav' extension.
-        file_names = [
+        filename_guids = [
             os.path.splitext(f)[0]
             for f in os.listdir(players_folder)
             if os.path.isfile(os.path.join(players_folder, f)) and f.endswith('.sav')
         ]
         
         global guid_cache
-        if file_names != list(guid_cache.keys()):
+        if filename_guids != list(guid_cache.keys()):
             level_json = sav_to_json(folder_path + '/Level.sav')
-            usernames = [
-                find_guid_info(level_json, guid)
-                for guid in file_names
-            ]
-            guid_cache = dict(zip(file_names, usernames))
+            players = find_players(level_json, filename_guids)
+            guid_cache = dict(zip(filename_guids, players))
         else:
-            usernames = list(guid_cache.values())
+            players = list(guid_cache.values())
         
-        if not combo_new_guid.get() in usernames:
+        if not combo_new_guid.get() in players:
             combo_new_guid.set('')
-        if not combo_old_guid.get() in usernames:
+        if not combo_old_guid.get() in players:
             combo_old_guid.set('')
-        combo_new_guid['values'] = usernames
-        combo_old_guid['values'] = usernames
+        combo_new_guid['values'] = players
+        combo_old_guid['values'] = players
 
-def find_guid_info(level_json, guid):
-    guid_formatted = '{}-{}-{}-{}-{}'.format(guid[:8], guid[8:12], guid[12:16], guid[16:20], guid[20:]).lower()
-    
+def find_players(level_json, filename_guids):
+    players = {}
     character_save_parameter_map = level_json['properties']['worldSaveData']['value']['CharacterSaveParameterMap']['value']
+    formatted_guids = [
+        '{}-{}-{}-{}-{}'.format(guid[:8], guid[8:12], guid[12:16], guid[16:20], guid[20:]).lower()
+        for guid in filename_guids
+    ]
+
     for i in range(len(character_save_parameter_map)):
-        candidate_guid_formatted = character_save_parameter_map[i]['key']['PlayerUId']['value']
+        player_uid = character_save_parameter_map[i]['key']['PlayerUId']['value']
         save_parameter = character_save_parameter_map[i]['value']['RawData']['value']['object']['SaveParameter']['value']
-        if guid_formatted == candidate_guid_formatted and 'IsPlayer' in save_parameter and save_parameter['IsPlayer']['value'] == True:
-            return save_parameter['NickName']['value'] + ' (Lvl. ' + (str(save_parameter['Level']['value']) if 'Level' in save_parameter else '0') + ')'
+
+        if player_uid in formatted_guids and 'IsPlayer' in save_parameter and save_parameter['IsPlayer']['value'] == True:
+            nickname = save_parameter['NickName']['value']
+            level = str(save_parameter['Level']['value']) if 'Level' in save_parameter else '0'
+            formatted_player_uid = str(player_uid)
+
+            formatted_guids.remove(formatted_player_uid)
+            players[f"[{formatted_player_uid[:8]}] {nickname} (Lvl. {level})"] = player_uid
     
-    return ''
+    players = dict(sorted(players.items(), key=lambda item: str(item[0])[11:].lower()))
+    players.update(dict(zip(
+        [
+            f"[{formatted_guid[:8]}] External Player"
+            for formatted_guid in formatted_guids
+        ],
+        formatted_guids,
+    )))
+    
+    return players
 
 def run_command():
     save_path = entry_save.get()
@@ -95,6 +111,8 @@ def load_config():
             guild_fix_var.set(config.get('guild_fix', ''))
 
 app = tk.Tk()
+app.geometry("350x250")
+app.resizable(False, False) 
 app.title('Fix Host Save Command GUI')
 
 # Save folder path.
@@ -109,12 +127,12 @@ button_browse_save.pack()
 
 # New GUID selection.
 tk.Label(app, text='The new character to overwrite:').pack()
-combo_new_guid = ttk.Combobox(app, postcommand=update_guid_dropdowns)
+combo_new_guid = ttk.Combobox(app, postcommand=update_guid_dropdowns, width=40)
 combo_new_guid.pack()
 
 # Old GUID selection.
 tk.Label(app, text='The old character to fix/keep:').pack()
-combo_old_guid = ttk.Combobox(app, postcommand=update_guid_dropdowns)
+combo_old_guid = ttk.Combobox(app, postcommand=update_guid_dropdowns, width=40)
 combo_old_guid.pack()
 
 # Guild fix selection.
