@@ -2,9 +2,9 @@ import json
 import os
 import subprocess
 import tkinter as tk
-from tkinter import filedialog, ttk
 
 from fix_host_save import sav_to_json
+from tkinter import filedialog, ttk
 
 player_cache = {}
 config_file = 'config.json'
