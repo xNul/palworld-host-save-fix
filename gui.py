@@ -6,13 +6,13 @@ from tkinter import filedialog, ttk
 
 from fix_host_save import sav_to_json
 
-guid_cache = {}
+player_cache = {}
 config_file = 'config.json'
 
 def browse_folder(entry):
     foldername = filedialog.askdirectory()
     if foldername != '':
-        guid_cache = {}
+        player_cache = {}
         entry.delete(0, tk.END)
         entry.insert(0, foldername)
         save_config()
@@ -29,53 +29,46 @@ def update_guid_dropdowns():
             if os.path.isfile(os.path.join(players_folder, f)) and f.endswith('.sav')
         ]
         
-        global guid_cache
-        if filename_guids != list(guid_cache.keys()):
+        global player_cache
+        if set(filename_guids) != set(player_cache.keys()):
             level_json = sav_to_json(folder_path + '/Level.sav')
-            players = find_players(level_json, filename_guids)
-            guid_cache = dict(zip(filename_guids, players))
-        else:
-            players = list(guid_cache.values())
+            player_cache = find_player_info(level_json, filename_guids)
         
-        if not combo_new_guid.get() in players:
+        usernames = list(player_cache.values())
+        if not combo_new_guid.get() in usernames:
             combo_new_guid.set('')
-        if not combo_old_guid.get() in players:
+        if not combo_old_guid.get() in usernames:
             combo_old_guid.set('')
-        combo_new_guid['values'] = players
-        combo_old_guid['values'] = players
+        combo_new_guid['values'] = usernames
+        combo_old_guid['values'] = usernames
 
-def find_players(level_json, filename_guids):
-    players = {}
+def find_player_info(level_json, filename_guids):
+    player_info = {}
     character_save_parameter_map = level_json['properties']['worldSaveData']['value']['CharacterSaveParameterMap']['value']
-    formatted_guids = [
-        '{}-{}-{}-{}-{}'.format(guid[:8], guid[8:12], guid[12:16], guid[16:20], guid[20:]).lower()
+    guid_data = {
+        '{}-{}-{}-{}-{}'.format(guid[:8], guid[8:12], guid[12:16], guid[16:20], guid[20:]).lower():str(guid)
         for guid in filename_guids
-    ]
+    }
 
     for i in range(len(character_save_parameter_map)):
         player_uid = character_save_parameter_map[i]['key']['PlayerUId']['value']
         save_parameter = character_save_parameter_map[i]['value']['RawData']['value']['object']['SaveParameter']['value']
 
-        if player_uid in formatted_guids and 'IsPlayer' in save_parameter and save_parameter['IsPlayer']['value'] == True:
+        if player_uid in guid_data.keys() and 'IsPlayer' in save_parameter and save_parameter['IsPlayer']['value'] == True:
             nickname = save_parameter['NickName']['value']
             level = str(save_parameter['Level']['value']) if 'Level' in save_parameter else '0'
 
-            formatted_player_uid = str(player_uid)
-            player_info = f"[{formatted_player_uid[:8]}] {nickname} (Lvl. {level})"
-
-            formatted_guids.remove(formatted_player_uid)
-            players[player_info] = player_uid
+            formatted_player_guid = str(player_uid)
+            filename_guid = guid_data.pop(formatted_player_guid)
+            player_info[filename_guid] = f"[{formatted_player_guid[:8]}] {nickname} (Lvl. {level})"
     
-    players = dict(sorted(players.items(), key=lambda item: str(item[0])[11:].lower()))
-    players.update(dict(zip(
-        [
-            f"[{formatted_guid[:8]}] External Player"
-            for formatted_guid in formatted_guids
-        ],
-        formatted_guids,
-    )))
+    player_info = dict(sorted(player_info.items(), key=lambda item: str(item[1])[11:].lower()))
+    player_info.update({
+        filename_guid:f"[{formatted_guid[:8]}] External Player"
+        for formatted_guid, filename_guid in guid_data.items()
+    })
     
-    return players
+    return player_info
 
 def run_command():
     save_path = entry_save.get()
