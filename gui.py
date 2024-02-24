@@ -79,9 +79,7 @@ def run_command():
     old_guid = list(player_cache.keys())[cmb_old_guid.current()]
     guild_fix = guild_fix_var.get()
     
-    command = (
-        f'python fix_host_save.py "{save_path}" {new_guid.replace(".sav", "")} {old_guid.replace(".sav", "")} {guild_fix}'
-    )
+    command = f'python fix_host_save.py "{save_path}" {new_guid.replace(".sav", "")} {old_guid.replace(".sav", "")} {guild_fix}'
     subprocess.run(command, shell=True)
     update_guid_dropdowns()
 
