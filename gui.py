@@ -6,13 +6,13 @@ import tkinter as tk
 from fix_host_save import sav_to_json
 from tkinter import filedialog, ttk
 
-player_cache = {}
+guid_cache = {}
 config_file = 'config.json'
 
 def browse_folder(entry):
     foldername = filedialog.askdirectory()
     if foldername != '':
-        player_cache = {}
+        guid_cache = {}
         entry.delete(0, tk.END)
         entry.insert(0, foldername)
         save_config()
@@ -23,18 +23,18 @@ def update_guid_dropdowns():
     players_folder = os.path.join(folder_path, 'Players')
     if os.path.exists(players_folder) and os.path.isdir(players_folder):
         # List all files and remove the '.sav' extension.
-        filename_guids = [
+        file_names = [
             os.path.splitext(f)[0]
             for f in os.listdir(players_folder)
             if os.path.isfile(os.path.join(players_folder, f)) and f.endswith('.sav')
         ]
 
-        global player_cache
-        if set(filename_guids) != set(player_cache.keys()):
+        global guid_cache
+        if set(file_names) != set(guid_cache.keys()):
             level_json = sav_to_json(folder_path + '/Level.sav')
-            player_cache = find_player_info(level_json, filename_guids)
+            guid_cache = find_player_info(level_json, file_names)
 
-        usernames = list(player_cache.values())
+        usernames = list(guid_cache.values())
         if not cmb_new_guid.get() in usernames:
             cmb_new_guid.set('')
 
@@ -75,8 +75,8 @@ def find_player_info(level_json, filename_guids):
 
 def run_command():
     save_path = ent_save_folder.get()
-    new_guid = list(player_cache.keys())[cmb_new_guid.current()]
-    old_guid = list(player_cache.keys())[cmb_old_guid.current()]
+    new_guid = list(guid_cache.keys())[cmb_new_guid.current()]
+    old_guid = list(guid_cache.keys())[cmb_old_guid.current()]
     guild_fix = guild_fix_var.get()
     
     command = f'python fix_host_save.py "{save_path}" {new_guid.replace(".sav", "")} {old_guid.replace(".sav", "")} {guild_fix}'
@@ -112,8 +112,7 @@ app.resizable(False, False)
 app.title('Fix Host Save Command GUI')
 
 # Save folder path.
-lbl_save_folder = tk.Label(app, text='Path to save folder:')
-lbl_save_folder.pack()
+tk.Label(app, text='Path to save folder:').pack()
 
 ent_save_folder = tk.Entry(app, width=50)
 ent_save_folder.pack()
@@ -125,15 +124,13 @@ btn_browse_folder = tk.Button(
 btn_browse_folder.pack(pady=(0, 10))
 
 # New GUID selection.
-lbl_new_guid = tk.Label(app, text='The new character to overwrite:')
-lbl_new_guid.pack()
+tk.Label(app, text='The new character to overwrite:').pack()
 
 cmb_new_guid = ttk.Combobox(app, postcommand=update_guid_dropdowns, width=40)
 cmb_new_guid.pack(pady=(0, 10))
 
 # Old GUID selection.
-lbl_old_guid = tk.Label(app, text='The old character to fix/keep:')
-lbl_old_guid.pack()
+tk.Label(app, text='The old character to fix/keep:').pack()
 
 cmb_old_guid = ttk.Combobox(app, postcommand=update_guid_dropdowns, width=40)
 cmb_old_guid.pack(pady=(0, 10))
