@@ -2,9 +2,9 @@ import json
 import os
 import subprocess
 import tkinter as tk
-from tkinter import filedialog, ttk
 
 from fix_host_save import sav_to_json
+from tkinter import filedialog, ttk
 
 guid_cache = {}
 config_file = 'config.json'
@@ -19,7 +19,7 @@ def browse_folder(entry):
         update_guid_dropdowns()
 
 def update_guid_dropdowns():
-    folder_path = entry_save.get()
+    folder_path = ent_save_folder.get()
     players_folder = os.path.join(folder_path, 'Players')
     if os.path.exists(players_folder) and os.path.isdir(players_folder):
         # List all files and remove the '.sav' extension.
@@ -28,54 +28,66 @@ def update_guid_dropdowns():
             for f in os.listdir(players_folder)
             if os.path.isfile(os.path.join(players_folder, f)) and f.endswith('.sav')
         ]
-        
-        global guid_cache
-        if file_names != list(guid_cache.keys()):
-            level_json = sav_to_json(folder_path + '/Level.sav')
-            usernames = [
-                find_guid_info(level_json, guid)
-                for guid in file_names
-            ]
-            guid_cache = dict(zip(file_names, usernames))
-        else:
-            usernames = list(guid_cache.values())
-        
-        if not combo_new_guid.get() in usernames:
-            combo_new_guid.set('')
-        if not combo_old_guid.get() in usernames:
-            combo_old_guid.set('')
-        combo_new_guid['values'] = usernames
-        combo_old_guid['values'] = usernames
 
-def find_guid_info(level_json, guid):
-    guid_formatted = '{}-{}-{}-{}-{}'.format(guid[:8], guid[8:12], guid[12:16], guid[16:20], guid[20:]).lower()
-    
+        global guid_cache
+        if set(file_names) != set(guid_cache.keys()):
+            level_json = sav_to_json(folder_path + '/Level.sav')
+            guid_cache = find_player_info(level_json, file_names)
+
+        usernames = list(guid_cache.values())
+        if not cmb_new_guid.get() in usernames:
+            cmb_new_guid.set('')
+
+        if not cmb_old_guid.get() in usernames:
+            cmb_old_guid.set('')
+
+        cmb_new_guid['values'] = usernames
+        cmb_old_guid['values'] = usernames
+
+def find_player_info(level_json, filename_guids):
+    player_info = {}
     character_save_parameter_map = level_json['properties']['worldSaveData']['value']['CharacterSaveParameterMap']['value']
+    guid_data = {
+        '{}-{}-{}-{}-{}'.format(guid[:8], guid[8:12], guid[12:16], guid[16:20], guid[20:]).lower():str(guid)
+        for guid in filename_guids
+    }
+
     for i in range(len(character_save_parameter_map)):
-        candidate_guid_formatted = character_save_parameter_map[i]['key']['PlayerUId']['value']
+        player_uid = character_save_parameter_map[i]['key']['PlayerUId']['value']
         save_parameter = character_save_parameter_map[i]['value']['RawData']['value']['object']['SaveParameter']['value']
-        if guid_formatted == candidate_guid_formatted and 'IsPlayer' in save_parameter and save_parameter['IsPlayer']['value'] == True:
-            return save_parameter['NickName']['value'] + ' (Lvl. ' + (str(save_parameter['Level']['value']) if 'Level' in save_parameter else '0') + ')'
+
+        if player_uid in guid_data.keys() and 'IsPlayer' in save_parameter and save_parameter['IsPlayer']['value'] == True:
+            nickname = save_parameter['NickName']['value']
+            level = str(save_parameter['Level']['value']) if 'Level' in save_parameter else '0'
+
+            formatted_player_guid = str(player_uid)
+            filename_guid = guid_data.pop(formatted_player_guid)
+
+            player_info[filename_guid] = f'{nickname} (Lvl. {level})'
     
-    return ''
+    player_info = dict(sorted(player_info.items(), key=lambda item: str(item[1]).lower()))
+    player_info.update({
+        filename_guid:formatted_guid
+        for formatted_guid, filename_guid in guid_data.items()
+    })
+    
+    return player_info
 
 def run_command():
-    save_path = entry_save.get()
-    new_guid = list(guid_cache.keys())[combo_new_guid.current()]
-    old_guid = list(guid_cache.keys())[combo_old_guid.current()]
+    save_path = ent_save_folder.get()
+    new_guid = list(guid_cache.keys())[cmb_new_guid.current()]
+    old_guid = list(guid_cache.keys())[cmb_old_guid.current()]
     guild_fix = guild_fix_var.get()
     
-    command = (
-        f'python fix_host_save.py "{save_path}" {new_guid.replace(".sav", "")} {old_guid.replace(".sav", "")} {guild_fix}'
-    )
+    command = f'python fix_host_save.py "{save_path}" {new_guid.replace(".sav", "")} {old_guid.replace(".sav", "")} {guild_fix}'
     subprocess.run(command, shell=True)
     update_guid_dropdowns()
 
 def save_config():
     config = {
-        'save_path': entry_save.get(),
-        'new_guid': combo_new_guid.get(),
-        'old_guid': combo_old_guid.get(),
+        'save_path': ent_save_folder.get(),
+        'new_guid': cmb_new_guid.get(),
+        'old_guid': cmb_old_guid.get(),
         'guild_fix': guild_fix_var.get(),
     }
     with open(config_file, 'w') as f:
@@ -88,43 +100,50 @@ def load_config():
     if os.path.exists(config_file):
         with open(config_file, 'r') as f:
             config = json.load(f)
-            entry_save.insert(0, config.get('save_path', ''))
+            ent_save_folder.insert(0, config.get('save_path', ''))
             update_guid_dropdowns()
-            combo_new_guid.set(config.get('new_guid', ''))
-            combo_old_guid.set(config.get('old_guid', ''))
+            cmb_new_guid.set(config.get('new_guid', ''))
+            cmb_old_guid.set(config.get('old_guid', ''))
             guild_fix_var.set(config.get('guild_fix', ''))
 
 app = tk.Tk()
+app.geometry('350x250')
+app.resizable(False, False) 
 app.title('Fix Host Save Command GUI')
 
 # Save folder path.
 tk.Label(app, text='Path to save folder:').pack()
-entry_save = tk.Entry(app, width=50)
-entry_save.pack()
-entry_save.bind('<KeyRelease>', on_entry_change)
-button_browse_save = tk.Button(
-    app, text='Browse', command=lambda: browse_folder(entry_save)
+
+ent_save_folder = tk.Entry(app, width=50)
+ent_save_folder.pack()
+ent_save_folder.bind('<KeyRelease>', on_entry_change)
+
+btn_browse_folder = tk.Button(
+    app, text='Browse', command=lambda: browse_folder(ent_save_folder)
 )
-button_browse_save.pack()
+btn_browse_folder.pack(pady=(0, 10))
 
 # New GUID selection.
 tk.Label(app, text='The new character to overwrite:').pack()
-combo_new_guid = ttk.Combobox(app, postcommand=update_guid_dropdowns)
-combo_new_guid.pack()
+
+cmb_new_guid = ttk.Combobox(app, postcommand=update_guid_dropdowns, width=40)
+cmb_new_guid.pack(pady=(0, 10))
 
 # Old GUID selection.
 tk.Label(app, text='The old character to fix/keep:').pack()
-combo_old_guid = ttk.Combobox(app, postcommand=update_guid_dropdowns)
-combo_old_guid.pack()
+
+cmb_old_guid = ttk.Combobox(app, postcommand=update_guid_dropdowns, width=40)
+cmb_old_guid.pack(pady=(0, 10))
 
 # Guild fix selection.
 guild_fix_var = tk.BooleanVar()
-cb_guild_fix = tk.Checkbutton(app, text='Guild fix', variable=guild_fix_var, height=2)
-cb_guild_fix.pack()
+
+chk_guild_fix = tk.Checkbutton(app, text='Guild fix', variable=guild_fix_var, height=2)
+chk_guild_fix.pack()
 
 # Run command button.
-run_button = tk.Button(app, text='Run Command', command=run_command)
-run_button.pack()
+btn_run_command = tk.Button(app, text='Run command', command=run_command)
+btn_run_command.pack()
 
 load_config()
 
